@@ -4,12 +4,15 @@ Market analyzer with advanced signal generation
 from data_fetcher import DataFetcher
 from technical_indicators import calculate_all_indicators
 from sentiment_analyzer import SentimentAnalyzer
+from candle_analysis import CandlePatternAnalyzer, EntryExitCalculator
 
 
 class MarketAnalyzer:
     def __init__(self):
         self.fetcher = DataFetcher()
         self.sentiment_analyzer = SentimentAnalyzer()
+        self.candle_analyzer = CandlePatternAnalyzer()
+        self.entry_exit_calculator = EntryExitCalculator(stop_loss_percent=30, take_profit_percent=200)
 
     def generate_signal(self, indicators, sentiment_score=0):
         """
@@ -351,6 +354,7 @@ class MarketAnalyzer:
 
             if not indicators:
                 return None
+
             # Get sentiment analysis
             if market_type == 'crypto':
                 sentiment = self.sentiment_analyzer.get_crypto_sentiment(symbol)
@@ -360,9 +364,27 @@ class MarketAnalyzer:
             # Add sentiment to signal generation
             sentiment_score = sentiment['score'] * 2  # Scale sentiment (-2 to +2)
 
-
             # Generate signal
             signal_data = self.generate_signal(indicators, sentiment_score)
+
+            # Fetch 4-hour chart data for candlestick pattern analysis
+            if market_type == 'crypto':
+                df_4h = self.fetcher.fetch_crypto_data(symbol, '4h', 100)
+            else:
+                df_4h = self.fetcher.fetch_forex_data(symbol, period='120d', interval='4h')
+
+            # Analyze candlestick patterns on 4-hour chart
+            candle_patterns = []
+            entry_exit_data = None
+
+            if df_4h is not None and len(df_4h) >= 10:
+                candle_patterns = self.candle_analyzer.analyze_patterns(df_4h)
+
+                # Calculate entry/exit points if patterns found
+                if candle_patterns:
+                    entry_exit_data = self.entry_exit_calculator.calculate_entry_points(
+                        df_4h, candle_patterns, indicators
+                    )
 
             # Get current price and change
             current_price = self.fetcher.get_current_price(symbol, market_type)
@@ -379,6 +401,8 @@ class MarketAnalyzer:
                 'reasons': signal_data['reasons'],
                 'indicators': indicators,
                 'sentiment': sentiment,
+                'candle_patterns': candle_patterns,
+                'entry_exit': entry_exit_data
             }
 
         except Exception as e:

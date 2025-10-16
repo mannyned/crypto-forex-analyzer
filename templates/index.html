@@ -282,6 +282,117 @@
             color: #555;
         }
 
+        .candle-patterns {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f9ff;
+            border-radius: 10px;
+            border: 2px solid #0ea5e9;
+        }
+
+        .candle-patterns-title {
+            font-weight: bold;
+            color: #0369a1;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .pattern {
+            padding: 8px;
+            margin: 5px 0;
+            background: white;
+            border-left: 3px solid #0ea5e9;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+
+        .pattern-name {
+            font-weight: bold;
+            color: #0369a1;
+        }
+
+        .pattern-bullish {
+            border-left-color: #10b981;
+        }
+
+        .pattern-bullish .pattern-name {
+            color: #059669;
+        }
+
+        .pattern-bearish {
+            border-left-color: #ef4444;
+        }
+
+        .pattern-bearish .pattern-name {
+            color: #dc2626;
+        }
+
+        .entry-exit {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fef3c7;
+            border-radius: 10px;
+            border: 2px solid #f59e0b;
+        }
+
+        .entry-exit-title {
+            font-weight: bold;
+            color: #b45309;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .trade-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .trade-item {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .trade-label {
+            font-size: 0.8em;
+            color: #78716c;
+            margin-bottom: 5px;
+        }
+
+        .trade-value {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #292524;
+        }
+
+        .trade-type {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .trade-type.LONG {
+            background: #10b981;
+            color: white;
+        }
+
+        .trade-type.SHORT {
+            background: #ef4444;
+            color: white;
+        }
+
+        .trade-type.NO_TRADE {
+            background: #9ca3af;
+            color: white;
+        }
+
         .disclaimer {
             background: #fff3cd;
             border: 2px solid #ffc107;
@@ -435,6 +546,68 @@
             const changeSign = market.change_24h >= 0 ? '+' : '';
             const signalClass = market.signal.replace(' ', '_');
 
+            // Generate candlestick patterns HTML
+            let patternsHTML = '';
+            if (market.candle_patterns && market.candle_patterns.length > 0) {
+                patternsHTML = `
+                    <div class="candle-patterns">
+                        <div class="candle-patterns-title">📊 Candlestick Patterns (4H Chart)</div>
+                        ${market.candle_patterns.map(pattern => `
+                            <div class="pattern pattern-${pattern.type}">
+                                <span class="pattern-name">${pattern.name}</span>
+                                <span style="float: right; color: #666;">Strength: ${pattern.strength}/10</span>
+                                <div style="clear: both; margin-top: 5px; font-size: 0.85em; color: #666;">
+                                    ${pattern.description}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            // Generate entry/exit HTML
+            let entryExitHTML = '';
+            if (market.entry_exit && market.entry_exit.trade_type !== 'NO TRADE') {
+                const ee = market.entry_exit;
+                entryExitHTML = `
+                    <div class="entry-exit">
+                        <div class="entry-exit-title">💰 Trading Setup</div>
+                        <div class="trade-type ${ee.trade_type.replace(' ', '_')}">
+                            ${ee.trade_type}
+                        </div>
+                        <div style="font-size: 0.9em; color: #78716c; margin-bottom: 10px;">
+                            ${ee.recommendation}
+                        </div>
+                        <div class="trade-info">
+                            <div class="trade-item">
+                                <div class="trade-label">Entry Price</div>
+                                <div class="trade-value">$${ee.entry_price}</div>
+                            </div>
+                            <div class="trade-item">
+                                <div class="trade-label">Stop Loss (30%)</div>
+                                <div class="trade-value" style="color: #ef4444;">$${ee.stop_loss}</div>
+                            </div>
+                            <div class="trade-item">
+                                <div class="trade-label">Take Profit (200%)</div>
+                                <div class="trade-value" style="color: #10b981;">$${ee.take_profit}</div>
+                            </div>
+                            <div class="trade-item">
+                                <div class="trade-label">Risk/Reward</div>
+                                <div class="trade-value">1:${ee.risk_reward_ratio}</div>
+                            </div>
+                            <div class="trade-item">
+                                <div class="trade-label">Risk Amount</div>
+                                <div class="trade-value">${ee.risk_percent}%</div>
+                            </div>
+                            <div class="trade-item">
+                                <div class="trade-label">Potential Profit</div>
+                                <div class="trade-value" style="color: #10b981;">+${ee.potential_profit_percent}%</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
             card.innerHTML = `
                 <div class="market-header">
                     <div>
@@ -466,6 +639,9 @@
                         `<div class="reason">${reason}</div>`
                     ).join('')}
                 </div>
+
+                ${patternsHTML}
+                ${entryExitHTML}
             `;
 
             return card;
