@@ -2,7 +2,14 @@
 
 ## Overview
 
-The Crypto & Forex Market Analyzer uses an advanced multi-method approach to calculate optimal stop loss and take profit levels for every trading opportunity.
+The Crypto & Forex Market Analyzer uses a **fully dynamic**, analysis-based approach to calculate optimal stop loss and take profit levels for every trading opportunity.
+
+**NO FIXED PERCENTAGES** - All recommendations are calculated in real-time based on:
+- Current market volatility (ATR)
+- Support and resistance levels
+- Swing highs and lows
+- Risk/reward optimization
+- Market structure analysis
 
 ## Stop Loss Calculation Methods
 
@@ -40,57 +47,87 @@ The Crypto & Forex Market Analyzer uses an advanced multi-method approach to cal
 - Support Level: $49,000
 - Stop Loss: $49,000 × 0.98 = $48,020
 
-### 4. **Percentage-Based Stop Loss (Safety Net)**
-- Default: 30% maximum loss
-- Acts as a safety cap to prevent excessive risk
-- Overrides other methods if they're too aggressive
+### 4. **Volatility-Based Stop Loss**
+- Dynamically calculated: 5-10% based on ATR
+- Adapts to current market conditions
+- Tighter stops for calm markets, wider for volatile markets
+- Acts as a reasonable fallback option
 
 **Example:**
 - Entry: $50,000
-- Stop Loss: $50,000 × 0.70 = $35,000 (30% max loss)
+- ATR: $500 (1% of price)
+- Volatility %: 1% × 1.5 = 1.5% × min(10, max(5)) = 7.5%
+- Stop Loss: $50,000 × 0.925 = $46,250
+
+### Maximum Loss Cap: 30%
+- Safety limit to prevent excessive risk
+- Overrides all methods if they exceed 30%
+- Ensures responsible risk management
 
 ### Stop Loss Selection Logic
 
-The system calculates all four methods and selects the **most conservative** (lowest risk):
+The system calculates all methods and intelligently selects the most appropriate:
 
 ```
-For LONG positions:
-- Use the HIGHEST stop loss (closest to entry)
-- Ensures minimum risk exposure
+Selection Criteria:
+1. Stop loss must be between 3% - 30% from entry
+2. Prefer structural levels (support/resistance) when available
+3. Default to ATR-based if structural levels not found
+4. Use volatility-based as conservative fallback
 
-For SHORT positions:
-- Use the LOWEST stop loss (closest to entry)
-- Ensures minimum risk exposure
+Priority Order:
+- LONG: Highest stop within range (lowest risk)
+- SHORT: Lowest stop within range (lowest risk)
 ```
 
 ## Take Profit Calculation Methods
 
-### 1. **Risk-Based Take Profit (Primary)**
-- Maintains a minimum 1:2 risk/reward ratio
-- Take Profit = Entry + (2 × Risk)
-- Professional traders' standard approach
+### Dynamic Risk/Reward System
+
+The system **dynamically adjusts** take profit targets based on stop loss size:
+
+#### **Tight Stops (≤5% risk):**
+- Risk/Reward: **1:3** (Aggressive)
+- Rationale: Small risk allows for larger profit targets
+- Example: 4% stop → 12% take profit
 
 **Example:**
 - Entry: $50,000
-- Stop Loss: $48,000
+- Stop Loss: $48,000 (4% risk)
 - Risk: $2,000
-- Take Profit: $50,000 + (2 × $2,000) = $54,000
+- Take Profit: $50,000 + (3 × $2,000) = $56,000 (12% profit)
+- Risk/Reward: 1:3
+
+#### **Medium Stops (5-10% risk):**
+- Risk/Reward: **1:2.5** (Balanced)
+- Rationale: Balanced risk requires balanced reward
+- Example: 7% stop → 17.5% take profit
+
+**Example:**
+- Entry: $50,000
+- Stop Loss: $46,500 (7% risk)
+- Risk: $3,500
+- Take Profit: $50,000 + (2.5 × $3,500) = $58,750 (17.5% profit)
+- Risk/Reward: 1:2.5
+
+#### **Wide Stops (>10% risk):**
+- Risk/Reward: **1:2** (Conservative)
+- Rationale: Large risk requires conservative targets
+- Example: 15% stop → 30% take profit
+
+**Example:**
+- Entry: $50,000
+- Stop Loss: $42,500 (15% risk)
+- Risk: $7,500
+- Take Profit: $50,000 + (2 × $7,500) = $65,000 (30% profit)
 - Risk/Reward: 1:2
 
-### 2. **Volatility-Adjusted Take Profit**
-- Uses ATR to set realistic targets
-- More volatile markets get larger profit targets
-- Take Profit = Entry ± (4 × ATR)
+### Realistic Profit Caps
 
-**Example:**
-- Entry: $50,000
-- ATR: $1,000
-- Take Profit: $50,000 + (4 × $1,000) = $54,000
-
-### 3. **Maximum Gain Cap**
-- LONG: Capped at 200% gain (3x entry price)
-- SHORT: Capped at 67% drop (0.33x entry price)
-- Ensures realistic profit targets
+- **LONG positions:** Maximum 100% gain (2x entry price)
+- **SHORT positions:** Maximum 50% drop (0.5x entry price)
+- Ensures achievable, realistic targets
+- Prevents overly optimistic projections
 
 ## Reasoning Display
 
