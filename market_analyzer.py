@@ -12,7 +12,7 @@ class MarketAnalyzer:
         self.fetcher = DataFetcher()
         self.sentiment_analyzer = SentimentAnalyzer()
         self.candle_analyzer = CandlePatternAnalyzer()
-        self.entry_exit_calculator = EntryExitCalculator(stop_loss_percent=30, take_profit_percent=200)
+        self.entry_exit_calculator = EntryExitCalculator()  # Now uses dynamic analysis
 
     def generate_signal(self, indicators, sentiment_score=0):
         """

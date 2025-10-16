@@ -331,16 +331,20 @@ class CandlePatternAnalyzer:
 
 
 class EntryExitCalculator:
-    def __init__(self, stop_loss_percent=30, take_profit_percent=200):
+    def __init__(self):
         """
-        Initialize with stop loss and take profit percentages
+        Initialize Entry/Exit Calculator with dynamic analysis-based recommendations
 
-        Args:
-            stop_loss_percent: Stop loss percentage (default 30%)
-            take_profit_percent: Take profit percentage (default 200%)
+        No fixed percentages - all stop loss and take profit levels are calculated
+        dynamically based on:
+        - Market volatility (ATR)
+        - Support/Resistance levels
+        - Swing highs/lows
+        - Risk/Reward ratios
         """
-        self.stop_loss_percent = stop_loss_percent
-        self.take_profit_percent = take_profit_percent
+        # These are now maximum caps only, not targets
+        self.max_stop_loss_percent = 30  # Maximum acceptable stop loss
+        self.min_risk_reward_ratio = 2.0  # Minimum 1:2 risk/reward
 
     def calculate_entry_points(self, df, patterns, indicators):
         """
@@ -414,130 +418,198 @@ class EntryExitCalculator:
 
     def _calculate_stop_loss_long(self, df, entry_price):
         """
-        Calculate stop loss for LONG position using multiple methods
+        Calculate recommended stop loss for LONG position using multiple methods
 
-        Methods:
-        1. ATR-based (2x ATR below entry)
-        2. Recent swing low (past 20 candles)
-        3. Percentage-based (30% default)
-        4. Support level based
+        Recommended Methods (in priority order):
+        1. ATR-based (2x ATR below entry) - PRIMARY
+        2. Support level based - STRUCTURAL
+        3. Recent swing low (past 20 candles) - TECHNICAL
+        4. Conservative fallback (5-10% based on volatility)
 
-        Returns the most conservative (highest) stop loss
+        Returns the most appropriate stop loss based on market conditions
         """
-        # Method 1: ATR-based stop loss (2 x ATR)
         atr = self._calculate_atr(df)
+        stop_losses = []
+
+        # Method 1: ATR-based stop loss (2 x ATR) - Adapts to volatility
         atr_stop = entry_price - (2 * atr)
+        stop_losses.append(('atr', atr_stop))
 
-        # Method 2: Swing low based (recent 20 candles)
-        recent_low = df['low'].tail(20).min()
-        swing_low_stop = recent_low * 0.98  # 2% below swing low for buffer
-
-        # Method 3: Percentage-based (30%)
-        percent_stop = entry_price * (1 - self.stop_loss_percent / 100)
-
-        # Method 4: Support level based (using recent consolidation areas)
+        # Method 2: Support level based (using recent consolidation areas)
         support_stop = self._find_nearest_support(df, entry_price)
+        if support_stop and support_stop < entry_price:
+            support_stop_level = support_stop * 0.98  # 2% below support for buffer
+            stop_losses.append(('support', support_stop_level))
 
-        # Use the highest stop loss (most conservative, least risk)
-        stop_losses = [atr_stop, swing_low_stop, percent_stop]
-        if support_stop:
-            stop_losses.append(support_stop * 0.98)  # Slightly below support
+        # Method 3: Swing low based (recent 20 candles)
+        recent_low = df['low'].tail(20).min()
+        if recent_low < entry_price:
+            swing_low_stop = recent_low * 0.98  # 2% below swing low
+            stop_losses.append(('swing_low', swing_low_stop))
 
-        recommended_stop = max(stop_losses)
+        # Calculate volatility-based percentage (5-10% based on ATR)
+        volatility_percent = min(10, max(5, (atr / entry_price) * 100 * 1.5))
+        volatility_stop = entry_price * (1 - volatility_percent / 100)
+        stop_losses.append(('volatility', volatility_stop))
 
-        # Ensure stop loss is reasonable (not more than 30% from entry)
-        max_stop = entry_price * 0.70  # Maximum 30% loss
-        return max(recommended_stop, max_stop)
+        # Sort by stop loss level (highest to lowest)
+        stop_losses.sort(key=lambda x: x[1], reverse=True)
+
+        # Choose the most conservative stop that's still reasonable
+        # Prefer structural levels (support) over technical levels
+        recommended_stop = atr_stop  # Default to ATR
+
+        for method, stop_level in stop_losses:
+            loss_percent = abs((entry_price - stop_level) / entry_price) * 100
+
+            # Accept stop if loss is between 3% and 30%
+            if 3 <= loss_percent <= self.max_stop_loss_percent:
+                recommended_stop = stop_level
+                break
+
+        # Final safety check - ensure stop loss is reasonable (max 30% loss)
+        max_stop = entry_price * 0.70
+        final_stop = max(recommended_stop, max_stop)
+
+        return final_stop
 
     def _calculate_stop_loss_short(self, df, entry_price):
         """
-        Calculate stop loss for SHORT position using multiple methods
+        Calculate recommended stop loss for SHORT position using multiple methods
 
-        Methods:
-        1. ATR-based (2x ATR above entry)
-        2. Recent swing high (past 20 candles)
-        3. Percentage-based (30% default)
-        4. Resistance level based
+        Recommended Methods (in priority order):
+        1. ATR-based (2x ATR above entry) - PRIMARY
+        2. Resistance level based - STRUCTURAL
+        3. Recent swing high (past 20 candles) - TECHNICAL
+        4. Conservative fallback (5-10% based on volatility)
 
-        Returns the most conservative (lowest) stop loss
+        Returns the most appropriate stop loss based on market conditions
         """
-        # Method 1: ATR-based stop loss (2 x ATR)
         atr = self._calculate_atr(df)
+        stop_losses = []
+
+        # Method 1: ATR-based stop loss (2 x ATR) - Adapts to volatility
         atr_stop = entry_price + (2 * atr)
+        stop_losses.append(('atr', atr_stop))
 
-        # Method 2: Swing high based (recent 20 candles)
-        recent_high = df['high'].tail(20).max()
-        swing_high_stop = recent_high * 1.02  # 2% above swing high for buffer
-
-        # Method 3: Percentage-based (30%)
-        percent_stop = entry_price * (1 + self.stop_loss_percent / 100)
-
-        # Method 4: Resistance level based
+        # Method 2: Resistance level based
         resistance_stop = self._find_nearest_resistance(df, entry_price)
+        if resistance_stop and resistance_stop > entry_price:
+            resistance_stop_level = resistance_stop * 1.02  # 2% above resistance
+            stop_losses.append(('resistance', resistance_stop_level))
 
-        # Use the lowest stop loss (most conservative, least risk)
-        stop_losses = [atr_stop, swing_high_stop, percent_stop]
-        if resistance_stop:
-            stop_losses.append(resistance_stop * 1.02)  # Slightly above resistance
+        # Method 3: Swing high based (recent 20 candles)
+        recent_high = df['high'].tail(20).max()
+        if recent_high > entry_price:
+            swing_high_stop = recent_high * 1.02  # 2% above swing high
+            stop_losses.append(('swing_high', swing_high_stop))
 
-        recommended_stop = min(stop_losses)
+        # Calculate volatility-based percentage (5-10% based on ATR)
+        volatility_percent = min(10, max(5, (atr / entry_price) * 100 * 1.5))
+        volatility_stop = entry_price * (1 + volatility_percent / 100)
+        stop_losses.append(('volatility', volatility_stop))
 
-        # Ensure stop loss is reasonable (not more than 30% from entry)
-        max_stop = entry_price * 1.30  # Maximum 30% loss
-        return min(recommended_stop, max_stop)
+        # Sort by stop loss level (lowest to highest)
+        stop_losses.sort(key=lambda x: x[1])
+
+        # Choose the most conservative stop that's still reasonable
+        recommended_stop = atr_stop  # Default to ATR
+
+        for method, stop_level in stop_losses:
+            loss_percent = abs((stop_level - entry_price) / entry_price) * 100
+
+            # Accept stop if loss is between 3% and 30%
+            if 3 <= loss_percent <= self.max_stop_loss_percent:
+                recommended_stop = stop_level
+                break
+
+        # Final safety check - ensure stop loss is reasonable (max 30% loss)
+        max_stop = entry_price * 1.30
+        final_stop = min(recommended_stop, max_stop)
+
+        return final_stop
 
     def _calculate_take_profit_long(self, entry_price, stop_loss):
         """
-        Calculate take profit for LONG position using multiple methods
+        Calculate recommended take profit for LONG position
 
-        Methods:
-        1. Risk-based (200% of risk = 1:2 risk/reward)
-        2. ATR-based (4x ATR above entry for volatile markets)
-        3. Fibonacci extension levels
+        Dynamic calculation based on:
+        1. Minimum 1:2 risk/reward ratio (professional standard)
+        2. Market volatility considerations
+        3. Realistic profit targets (not excessive)
 
-        Returns the most realistic take profit target
+        Returns the most appropriate take profit target
         """
         risk = entry_price - stop_loss
 
-        # Method 1: Risk-based (200% of risk)
-        risk_based_tp = entry_price + (risk * 2)  # 1:2 risk/reward ratio
+        # Calculate minimum take profit (1:2 risk/reward)
+        min_reward = risk * self.min_risk_reward_ratio
+        min_take_profit = entry_price + min_reward
 
-        # Method 2: Percentage-based (for very conservative approach)
-        percent_tp = entry_price + (risk * (self.take_profit_percent / 100))
+        # Calculate aggressive take profit (1:3 risk/reward for strong setups)
+        aggressive_reward = risk * 3
+        aggressive_take_profit = entry_price + aggressive_reward
 
-        # Method 3: ATR-based (4x ATR for realistic volatile market target)
-        # This will be calculated if ATR is available
+        # Determine recommended take profit based on risk size
+        risk_percent = (risk / entry_price) * 100
 
-        # Use risk-based as primary (most common approach)
-        # But cap it at 200% gain for realism
-        take_profit = min(risk_based_tp, entry_price * 3.0)  # Max 200% gain
+        if risk_percent <= 5:
+            # Tight stop = more aggressive profit target possible
+            recommended_tp = aggressive_take_profit
+        elif risk_percent <= 10:
+            # Medium stop = balanced profit target (1:2.5)
+            recommended_tp = entry_price + (risk * 2.5)
+        else:
+            # Wide stop = conservative profit target (1:2)
+            recommended_tp = min_take_profit
 
-        return take_profit
+        # Safety cap: Don't exceed 100% gain from entry (2x price)
+        # This keeps targets realistic
+        max_reasonable_tp = entry_price * 2.0
+        final_tp = min(recommended_tp, max_reasonable_tp)
+
+        return final_tp
 
     def _calculate_take_profit_short(self, entry_price, stop_loss):
         """
-        Calculate take profit for SHORT position using multiple methods
+        Calculate recommended take profit for SHORT position
 
-        Methods:
-        1. Risk-based (200% of risk = 1:2 risk/reward)
-        2. ATR-based (4x ATR below entry for volatile markets)
-        3. Fibonacci extension levels
+        Dynamic calculation based on:
+        1. Minimum 1:2 risk/reward ratio (professional standard)
+        2. Market volatility considerations
+        3. Realistic profit targets (not excessive)
 
-        Returns the most realistic take profit target
+        Returns the most appropriate take profit target
         """
         risk = stop_loss - entry_price
 
-        # Method 1: Risk-based (200% of risk)
-        risk_based_tp = entry_price - (risk * 2)  # 1:2 risk/reward ratio
+        # Calculate minimum take profit (1:2 risk/reward)
+        min_reward = risk * self.min_risk_reward_ratio
+        min_take_profit = entry_price - min_reward
 
-        # Method 2: Percentage-based
-        percent_tp = entry_price - (risk * (self.take_profit_percent / 100))
+        # Calculate aggressive take profit (1:3 risk/reward for strong setups)
+        aggressive_reward = risk * 3
+        aggressive_take_profit = entry_price - aggressive_reward
 
-        # Use risk-based as primary
-        # But ensure it doesn't go negative and cap at reasonable level
-        take_profit = max(risk_based_tp, entry_price * 0.33)  # Don't go below 67% drop
+        # Determine recommended take profit based on risk size
+        risk_percent = (risk / entry_price) * 100
 
-        return take_profit
+        if risk_percent <= 5:
+            # Tight stop = more aggressive profit target possible
+            recommended_tp = aggressive_take_profit
+        elif risk_percent <= 10:
+            # Medium stop = balanced profit target (1:2.5)
+            recommended_tp = entry_price - (risk * 2.5)
+        else:
+            # Wide stop = conservative profit target (1:2)
+            recommended_tp = min_take_profit
+
+        # Safety floor: Don't go below 50% of entry price
+        # This keeps targets realistic for shorts
+        min_reasonable_tp = entry_price * 0.50
+        final_tp = max(recommended_tp, min_reasonable_tp)
+
+        return final_tp
 
     def _identify_key_levels(self, df, current_price):
         """Identify support and resistance levels"""
