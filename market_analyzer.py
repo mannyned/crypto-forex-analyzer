@@ -3,13 +3,15 @@ Market analyzer with advanced signal generation
 """
 from data_fetcher import DataFetcher
 from technical_indicators import calculate_all_indicators
+from sentiment_analyzer import SentimentAnalyzer
 
 
 class MarketAnalyzer:
     def __init__(self):
         self.fetcher = DataFetcher()
+        self.sentiment_analyzer = SentimentAnalyzer()
 
-    def generate_signal(self, indicators):
+    def generate_signal(self, indicators, sentiment_score=0):
         """
         Generate trading signal based on multiple technical indicators
 
@@ -173,6 +175,20 @@ class MarketAnalyzer:
                 sell_signals += 1
                 reasons.append(f"Price below Parabolic SAR ({psar:.2f})")
 
+        # Supertrend
+        if indicators.get('supertrend') and indicators.get('supertrend_direction'):
+            supertrend = indicators['supertrend']
+            direction = indicators['supertrend_direction']
+            
+            if direction == 1:  # Uptrend
+                score += 2
+                buy_signals += 1
+                reasons.append(f"Supertrend uptrend (ST: {supertrend:.2f})")
+            elif direction == -1:  # Downtrend
+                score -= 2
+                sell_signals += 1
+                reasons.append(f"Supertrend downtrend (ST: {supertrend:.2f})")
+
         # Ichimoku Cloud
         if indicators.get('ichimoku_span_a') and indicators.get('ichimoku_span_b'):
             span_a = indicators['ichimoku_span_a']
@@ -260,6 +276,26 @@ class MarketAnalyzer:
                 score += 1
                 reasons.append(f"Near Fibonacci 61.8% support ({fib_618:.2f})")
 
+        # === SENTIMENT ANALYSIS ===
+        # Add sentiment score to overall score
+        if sentiment_score > 0.5:
+            score += 2
+            buy_signals += 1
+            reasons.append(f"Positive market sentiment ({sentiment_score:.2f})")
+        elif sentiment_score < -0.5:
+            score -= 2
+            sell_signals += 1
+            reasons.append(f"Negative market sentiment ({sentiment_score:.2f})")
+        elif abs(sentiment_score) > 0.2:
+            if sentiment_score > 0:
+                score += 1
+                buy_signals += 1
+                reasons.append(f"Slightly positive sentiment ({sentiment_score:.2f})")
+            else:
+                score -= 1
+                sell_signals += 1
+                reasons.append(f"Slightly negative sentiment ({sentiment_score:.2f})")
+
         # === GENERATE FINAL SIGNAL ===
 
         # Calculate strength percentage
@@ -315,9 +351,18 @@ class MarketAnalyzer:
 
             if not indicators:
                 return None
+            # Get sentiment analysis
+            if market_type == 'crypto':
+                sentiment = self.sentiment_analyzer.get_crypto_sentiment(symbol)
+            else:
+                sentiment = self.sentiment_analyzer.get_forex_sentiment(symbol)
+
+            # Add sentiment to signal generation
+            sentiment_score = sentiment['score'] * 2  # Scale sentiment (-2 to +2)
+
 
             # Generate signal
-            signal_data = self.generate_signal(indicators)
+            signal_data = self.generate_signal(indicators, sentiment_score)
 
             # Get current price and change
             current_price = self.fetcher.get_current_price(symbol, market_type)
@@ -332,7 +377,8 @@ class MarketAnalyzer:
                 'score': signal_data['score'],
                 'strength': signal_data['strength'],
                 'reasons': signal_data['reasons'],
-                'indicators': indicators
+                'indicators': indicators,
+                'sentiment': sentiment,
             }
 
         except Exception as e:

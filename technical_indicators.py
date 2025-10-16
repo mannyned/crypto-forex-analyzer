@@ -54,6 +54,62 @@ def calculate_atr(df, period=14):
     atr = true_range.rolling(period).mean()
     return atr
 
+def calculate_supertrend(df, period=10, multiplier=3):
+    """
+    Calculate Supertrend indicator
+    
+    Args:
+        df: DataFrame with OHLC data
+        period: ATR period (default 10)
+        multiplier: ATR multiplier (default 3)
+    
+    Returns:
+        supertrend: Supertrend line values
+        direction: 1 for uptrend, -1 for downtrend
+    """
+    # Calculate ATR
+    high_low = df['high'] - df['low']
+    high_close = np.abs(df['high'] - df['close'].shift())
+    low_close = np.abs(df['low'] - df['close'].shift())
+    ranges = pd.concat([high_low, high_close, low_close], axis=1)
+    true_range = np.max(ranges, axis=1)
+    atr = true_range.rolling(period).mean()
+    
+    # Calculate basic upper and lower bands
+    hl_avg = (df['high'] + df['low']) / 2
+    upper_band = hl_avg + (multiplier * atr)
+    lower_band = hl_avg - (multiplier * atr)
+    
+    # Initialize supertrend and direction
+    supertrend = pd.Series(index=df.index, dtype=float)
+    direction = pd.Series(index=df.index, dtype=float)
+    
+    # Calculate supertrend
+    for i in range(period, len(df)):
+        if i == period:
+            supertrend.iloc[i] = upper_band.iloc[i]
+            direction.iloc[i] = -1
+        else:
+            # Adjust bands based on previous values
+            if upper_band.iloc[i] < supertrend.iloc[i-1] or df['close'].iloc[i-1] > supertrend.iloc[i-1]:
+                upper_band.iloc[i] = upper_band.iloc[i]
+            else:
+                upper_band.iloc[i] = supertrend.iloc[i-1]
+                
+            if lower_band.iloc[i] > supertrend.iloc[i-1] or df['close'].iloc[i-1] < supertrend.iloc[i-1]:
+                lower_band.iloc[i] = lower_band.iloc[i]
+            else:
+                lower_band.iloc[i] = supertrend.iloc[i-1]
+            
+            # Determine trend direction
+            if df['close'].iloc[i] <= upper_band.iloc[i]:
+                supertrend.iloc[i] = upper_band.iloc[i]
+                direction.iloc[i] = -1  # Downtrend
+            else:
+                supertrend.iloc[i] = lower_band.iloc[i]
+                direction.iloc[i] = 1   # Uptrend
+    
+    return supertrend, direction
 
 def calculate_stochastic(df, period=14, smooth_k=3, smooth_d=3):
     """Calculate Stochastic Oscillator (%K and %D)"""
@@ -268,6 +324,7 @@ def calculate_all_indicators(df):
         ema_50 = calculate_ema(df, 50)
         adx, plus_di, minus_di = calculate_adx(df)
         psar = calculate_parabolic_sar(df)
+        supertrend, supertrend_direction = calculate_supertrend(df)
 
         # Volatility indicators
         bb_upper, bb_middle, bb_lower = calculate_bollinger_bands(df)
@@ -314,6 +371,8 @@ def calculate_all_indicators(df):
             'plus_di': float(plus_di.iloc[-1]) if not pd.isna(plus_di.iloc[-1]) else None,
             'minus_di': float(minus_di.iloc[-1]) if not pd.isna(minus_di.iloc[-1]) else None,
             'psar': float(psar.iloc[-1]) if not pd.isna(psar.iloc[-1]) else None,
+            'supertrend': float(supertrend.iloc[-1]) if not pd.isna(supertrend.iloc[-1]) else None,
+            'supertrend_direction': float(supertrend_direction.iloc[-1]) if not pd.isna(supertrend_direction.iloc[-1]) else None,
 
             # Volatility
             'bb_upper': float(bb_upper.iloc[-1]) if not pd.isna(bb_upper.iloc[-1]) else None,
