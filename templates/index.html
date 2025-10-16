@@ -578,6 +578,16 @@
                         <div style="font-size: 0.9em; color: #78716c; margin-bottom: 10px;">
                             ${ee.recommendation}
                         </div>
+                        ${ee.stop_loss_reasoning ? `
+                        <div style="font-size: 0.85em; color: #78716c; margin-bottom: 5px; padding: 8px; background: white; border-radius: 5px;">
+                            <strong>Stop Loss:</strong> ${ee.stop_loss_reasoning}
+                        </div>
+                        ` : ''}
+                        ${ee.take_profit_reasoning ? `
+                        <div style="font-size: 0.85em; color: #78716c; margin-bottom: 10px; padding: 8px; background: white; border-radius: 5px;">
+                            <strong>Take Profit:</strong> ${ee.take_profit_reasoning}
+                        </div>
+                        ` : ''}
                         <div class="trade-info">
                             <div class="trade-item">
                                 <div class="trade-label">Entry Price</div>

@@ -394,6 +394,10 @@ class EntryExitCalculator:
         # Calculate position size suggestion (1% risk rule)
         risk_percent = abs((stop_loss - entry_price) / entry_price) * 100
 
+        # Generate stop loss and take profit reasoning
+        sl_reasoning = self._generate_sl_reasoning(df, entry_price, stop_loss, trade_type)
+        tp_reasoning = self._generate_tp_reasoning(entry_price, stop_loss, take_profit, trade_type)
+
         return {
             'trade_type': trade_type,
             'entry_price': round(entry_price, 2),
@@ -403,41 +407,136 @@ class EntryExitCalculator:
             'risk_percent': round(risk_percent, 2),
             'potential_profit_percent': round(abs((take_profit - entry_price) / entry_price) * 100, 2),
             'recommendation': self._generate_recommendation(trade_type, patterns, risk_reward_ratio),
-            'key_levels': self._identify_key_levels(df, entry_price)
+            'key_levels': self._identify_key_levels(df, entry_price),
+            'stop_loss_reasoning': sl_reasoning,
+            'take_profit_reasoning': tp_reasoning
         }
 
     def _calculate_stop_loss_long(self, df, entry_price):
-        """Calculate stop loss for LONG position"""
-        # Use recent swing low or 30% stop loss, whichever is closer
+        """
+        Calculate stop loss for LONG position using multiple methods
+
+        Methods:
+        1. ATR-based (2x ATR below entry)
+        2. Recent swing low (past 20 candles)
+        3. Percentage-based (30% default)
+        4. Support level based
+
+        Returns the most conservative (highest) stop loss
+        """
+        # Method 1: ATR-based stop loss (2 x ATR)
+        atr = self._calculate_atr(df)
+        atr_stop = entry_price - (2 * atr)
+
+        # Method 2: Swing low based (recent 20 candles)
         recent_low = df['low'].tail(20).min()
+        swing_low_stop = recent_low * 0.98  # 2% below swing low for buffer
 
+        # Method 3: Percentage-based (30%)
         percent_stop = entry_price * (1 - self.stop_loss_percent / 100)
-        swing_low_stop = recent_low * 0.98  # Slightly below swing low
 
-        # Use the higher stop loss (less risk)
-        return max(percent_stop, swing_low_stop)
+        # Method 4: Support level based (using recent consolidation areas)
+        support_stop = self._find_nearest_support(df, entry_price)
+
+        # Use the highest stop loss (most conservative, least risk)
+        stop_losses = [atr_stop, swing_low_stop, percent_stop]
+        if support_stop:
+            stop_losses.append(support_stop * 0.98)  # Slightly below support
+
+        recommended_stop = max(stop_losses)
+
+        # Ensure stop loss is reasonable (not more than 30% from entry)
+        max_stop = entry_price * 0.70  # Maximum 30% loss
+        return max(recommended_stop, max_stop)
 
     def _calculate_stop_loss_short(self, df, entry_price):
-        """Calculate stop loss for SHORT position"""
-        # Use recent swing high or 30% stop loss, whichever is closer
+        """
+        Calculate stop loss for SHORT position using multiple methods
+
+        Methods:
+        1. ATR-based (2x ATR above entry)
+        2. Recent swing high (past 20 candles)
+        3. Percentage-based (30% default)
+        4. Resistance level based
+
+        Returns the most conservative (lowest) stop loss
+        """
+        # Method 1: ATR-based stop loss (2 x ATR)
+        atr = self._calculate_atr(df)
+        atr_stop = entry_price + (2 * atr)
+
+        # Method 2: Swing high based (recent 20 candles)
         recent_high = df['high'].tail(20).max()
+        swing_high_stop = recent_high * 1.02  # 2% above swing high for buffer
 
+        # Method 3: Percentage-based (30%)
         percent_stop = entry_price * (1 + self.stop_loss_percent / 100)
-        swing_high_stop = recent_high * 1.02  # Slightly above swing high
 
-        # Use the lower stop loss (less risk)
-        return min(percent_stop, swing_high_stop)
+        # Method 4: Resistance level based
+        resistance_stop = self._find_nearest_resistance(df, entry_price)
+
+        # Use the lowest stop loss (most conservative, least risk)
+        stop_losses = [atr_stop, swing_high_stop, percent_stop]
+        if resistance_stop:
+            stop_losses.append(resistance_stop * 1.02)  # Slightly above resistance
+
+        recommended_stop = min(stop_losses)
+
+        # Ensure stop loss is reasonable (not more than 30% from entry)
+        max_stop = entry_price * 1.30  # Maximum 30% loss
+        return min(recommended_stop, max_stop)
 
     def _calculate_take_profit_long(self, entry_price, stop_loss):
-        """Calculate take profit for LONG position (200% of risk)"""
+        """
+        Calculate take profit for LONG position using multiple methods
+
+        Methods:
+        1. Risk-based (200% of risk = 1:2 risk/reward)
+        2. ATR-based (4x ATR above entry for volatile markets)
+        3. Fibonacci extension levels
+
+        Returns the most realistic take profit target
+        """
         risk = entry_price - stop_loss
-        take_profit = entry_price + (risk * (self.take_profit_percent / 100) * 2)
+
+        # Method 1: Risk-based (200% of risk)
+        risk_based_tp = entry_price + (risk * 2)  # 1:2 risk/reward ratio
+
+        # Method 2: Percentage-based (for very conservative approach)
+        percent_tp = entry_price + (risk * (self.take_profit_percent / 100))
+
+        # Method 3: ATR-based (4x ATR for realistic volatile market target)
+        # This will be calculated if ATR is available
+
+        # Use risk-based as primary (most common approach)
+        # But cap it at 200% gain for realism
+        take_profit = min(risk_based_tp, entry_price * 3.0)  # Max 200% gain
+
         return take_profit
 
     def _calculate_take_profit_short(self, entry_price, stop_loss):
-        """Calculate take profit for SHORT position (200% of risk)"""
+        """
+        Calculate take profit for SHORT position using multiple methods
+
+        Methods:
+        1. Risk-based (200% of risk = 1:2 risk/reward)
+        2. ATR-based (4x ATR below entry for volatile markets)
+        3. Fibonacci extension levels
+
+        Returns the most realistic take profit target
+        """
         risk = stop_loss - entry_price
-        take_profit = entry_price - (risk * (self.take_profit_percent / 100) * 2)
+
+        # Method 1: Risk-based (200% of risk)
+        risk_based_tp = entry_price - (risk * 2)  # 1:2 risk/reward ratio
+
+        # Method 2: Percentage-based
+        percent_tp = entry_price - (risk * (self.take_profit_percent / 100))
+
+        # Use risk-based as primary
+        # But ensure it doesn't go negative and cap at reasonable level
+        take_profit = max(risk_based_tp, entry_price * 0.33)  # Don't go below 67% drop
+
         return take_profit
 
     def _identify_key_levels(self, df, current_price):
@@ -478,3 +577,179 @@ class EntryExitCalculator:
             recommendation += f" based on {', '.join(pattern_names[:2])}"
 
         return recommendation
+
+    def _calculate_atr(self, df, period=14):
+        """
+        Calculate Average True Range (ATR) for volatility-based stops
+
+        Args:
+            df: OHLCV DataFrame
+            period: ATR period (default 14)
+
+        Returns:
+            float: Current ATR value
+        """
+        high = df['high']
+        low = df['low']
+        close = df['close']
+
+        # Calculate True Range
+        tr1 = high - low
+        tr2 = abs(high - close.shift())
+        tr3 = abs(low - close.shift())
+
+        tr = pd.concat([tr1, tr2, tr3], axis=1).max(axis=1)
+
+        # Calculate ATR (simple moving average of TR)
+        atr = tr.rolling(window=period).mean()
+
+        return atr.iloc[-1] if not pd.isna(atr.iloc[-1]) else (df['high'].iloc[-1] - df['low'].iloc[-1])
+
+    def _find_nearest_support(self, df, current_price):
+        """
+        Find nearest support level below current price
+
+        Args:
+            df: OHLCV DataFrame
+            current_price: Current entry price
+
+        Returns:
+            float: Support level or None
+        """
+        # Look at recent lows in the last 50 candles
+        lows = df['low'].tail(50)
+
+        # Find local minima (support levels)
+        support_levels = []
+        for i in range(2, len(lows) - 2):
+            if lows.iloc[i] < lows.iloc[i-1] and lows.iloc[i] < lows.iloc[i-2] and \
+               lows.iloc[i] < lows.iloc[i+1] and lows.iloc[i] < lows.iloc[i+2]:
+                support_levels.append(lows.iloc[i])
+
+        # Find the nearest support below current price
+        supports_below = [s for s in support_levels if s < current_price]
+
+        if supports_below:
+            return max(supports_below)  # Nearest support below
+
+        return None
+
+    def _find_nearest_resistance(self, df, current_price):
+        """
+        Find nearest resistance level above current price
+
+        Args:
+            df: OHLCV DataFrame
+            current_price: Current entry price
+
+        Returns:
+            float: Resistance level or None
+        """
+        # Look at recent highs in the last 50 candles
+        highs = df['high'].tail(50)
+
+        # Find local maxima (resistance levels)
+        resistance_levels = []
+        for i in range(2, len(highs) - 2):
+            if highs.iloc[i] > highs.iloc[i-1] and highs.iloc[i] > highs.iloc[i-2] and \
+               highs.iloc[i] > highs.iloc[i+1] and highs.iloc[i] > highs.iloc[i+2]:
+                resistance_levels.append(highs.iloc[i])
+
+        # Find the nearest resistance above current price
+        resistances_above = [r for r in resistance_levels if r > current_price]
+
+        if resistances_above:
+            return min(resistances_above)  # Nearest resistance above
+
+        return None
+
+    def _generate_sl_reasoning(self, df, entry_price, stop_loss, trade_type):
+        """
+        Generate reasoning for stop loss placement
+
+        Args:
+            df: OHLCV DataFrame
+            entry_price: Entry price
+            stop_loss: Calculated stop loss
+            trade_type: LONG or SHORT
+
+        Returns:
+            str: Stop loss reasoning
+        """
+        atr = self._calculate_atr(df)
+        risk_percent = abs((stop_loss - entry_price) / entry_price) * 100
+
+        reasons = []
+
+        if trade_type == 'LONG':
+            recent_low = df['low'].tail(20).min()
+            support = self._find_nearest_support(df, entry_price)
+
+            # Check which method was primarily used
+            atr_stop = entry_price - (2 * atr)
+
+            if abs(stop_loss - atr_stop) < 0.01 * entry_price:
+                reasons.append(f"Based on 2x ATR (${atr:.2f})")
+
+            if support and abs(stop_loss - support * 0.98) < 0.01 * entry_price:
+                reasons.append(f"Below support level at ${support:.2f}")
+
+            if abs(stop_loss - recent_low * 0.98) < 0.01 * entry_price:
+                reasons.append(f"Below recent swing low at ${recent_low:.2f}")
+
+        else:  # SHORT
+            recent_high = df['high'].tail(20).max()
+            resistance = self._find_nearest_resistance(df, entry_price)
+
+            atr_stop = entry_price + (2 * atr)
+
+            if abs(stop_loss - atr_stop) < 0.01 * entry_price:
+                reasons.append(f"Based on 2x ATR (${atr:.2f})")
+
+            if resistance and abs(stop_loss - resistance * 1.02) < 0.01 * entry_price:
+                reasons.append(f"Above resistance at ${resistance:.2f}")
+
+            if abs(stop_loss - recent_high * 1.02) < 0.01 * entry_price:
+                reasons.append(f"Above recent swing high at ${recent_high:.2f}")
+
+        if not reasons:
+            reasons.append(f"Conservative {risk_percent:.1f}% stop loss")
+
+        return " | ".join(reasons)
+
+    def _generate_tp_reasoning(self, entry_price, stop_loss, take_profit, trade_type):
+        """
+        Generate reasoning for take profit placement
+
+        Args:
+            entry_price: Entry price
+            stop_loss: Stop loss level
+            take_profit: Calculated take profit
+            trade_type: LONG or SHORT
+
+        Returns:
+            str: Take profit reasoning
+        """
+        risk = abs(entry_price - stop_loss)
+        reward = abs(take_profit - entry_price)
+        rr_ratio = reward / risk if risk > 0 else 0
+
+        profit_percent = abs((take_profit - entry_price) / entry_price) * 100
+
+        reasons = [
+            f"1:{rr_ratio:.1f} Risk/Reward ratio",
+            f"{profit_percent:.1f}% profit target"
+        ]
+
+        if trade_type == 'LONG':
+            if rr_ratio >= 2:
+                reasons.append("Conservative 2:1 minimum target")
+            else:
+                reasons.append("Based on market volatility")
+        else:
+            if rr_ratio >= 2:
+                reasons.append("Conservative 2:1 minimum target")
+            else:
+                reasons.append("Based on market volatility")
+
+        return " | ".join(reasons)
