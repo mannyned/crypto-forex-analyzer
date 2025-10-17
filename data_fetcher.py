@@ -29,11 +29,15 @@ class DataFetcher:
                 symbol = symbol.replace('/USDT', '-USD').replace('/', '-')
 
             # Map timeframe
-            interval_map = {'1h': '1h', '4h': '4h', '1d': '1d'}
+            interval_map = {'5m': '5m', '15m': '15m', '1h': '1h', '4h': '4h', '1d': '1d'}
             interval = interval_map.get(timeframe, '1h')
 
             # Calculate period based on limit
-            if interval == '1h':
+            if interval == '5m':
+                period = '5d' if limit <= 100 else '7d'
+            elif interval == '15m':
+                period = '5d' if limit <= 100 else '7d'
+            elif interval == '1h':
                 period = '1mo' if limit <= 120 else '3mo'
             elif interval == '4h':
                 period = '1mo' if limit <= 180 else '3mo'

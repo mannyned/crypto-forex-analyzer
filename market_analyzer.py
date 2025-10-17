@@ -367,23 +367,42 @@ class MarketAnalyzer:
             # Generate signal
             signal_data = self.generate_signal(indicators, sentiment_score)
 
-            # Fetch 4-hour chart data for candlestick pattern analysis
+            # Fetch 4-hour chart data for candlestick pattern analysis (medium-term)
             if market_type == 'crypto':
                 df_4h = self.fetcher.fetch_crypto_data(symbol, '4h', 100)
             else:
                 df_4h = self.fetcher.fetch_forex_data(symbol, period='120d', interval='4h')
 
             # Analyze candlestick patterns on 4-hour chart
-            candle_patterns = []
-            entry_exit_data = None
+            candle_patterns_4h = []
+            entry_exit_data_4h = None
 
             if df_4h is not None and len(df_4h) >= 10:
-                candle_patterns = self.candle_analyzer.analyze_patterns(df_4h)
+                candle_patterns_4h = self.candle_analyzer.analyze_patterns(df_4h)
 
                 # Calculate entry/exit points if patterns found
-                if candle_patterns:
-                    entry_exit_data = self.entry_exit_calculator.calculate_entry_points(
-                        df_4h, candle_patterns, indicators
+                if candle_patterns_4h:
+                    entry_exit_data_4h = self.entry_exit_calculator.calculate_entry_points(
+                        df_4h, candle_patterns_4h, indicators
+                    )
+
+            # Fetch 5-minute chart data for candlestick pattern analysis (short-term/scalping)
+            if market_type == 'crypto':
+                df_5m = self.fetcher.fetch_crypto_data(symbol, '5m', 100)
+            else:
+                df_5m = self.fetcher.fetch_forex_data(symbol, period='5d', interval='5m')
+
+            # Analyze candlestick patterns on 5-minute chart
+            candle_patterns_5m = []
+            entry_exit_data_5m = None
+
+            if df_5m is not None and len(df_5m) >= 10:
+                candle_patterns_5m = self.candle_analyzer.analyze_patterns(df_5m)
+
+                # Calculate entry/exit points if patterns found
+                if candle_patterns_5m:
+                    entry_exit_data_5m = self.entry_exit_calculator.calculate_entry_points(
+                        df_5m, candle_patterns_5m, indicators
                     )
 
             # Get current price and change
@@ -401,8 +420,13 @@ class MarketAnalyzer:
                 'reasons': signal_data['reasons'],
                 'indicators': indicators,
                 'sentiment': sentiment,
-                'candle_patterns': candle_patterns,
-                'entry_exit': entry_exit_data
+                'candle_patterns_4h': candle_patterns_4h,
+                'entry_exit_4h': entry_exit_data_4h,
+                'candle_patterns_5m': candle_patterns_5m,
+                'entry_exit_5m': entry_exit_data_5m,
+                # Keep old keys for backward compatibility
+                'candle_patterns': candle_patterns_4h,
+                'entry_exit': entry_exit_data_4h
             }
 
         except Exception as e:

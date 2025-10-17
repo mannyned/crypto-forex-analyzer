@@ -909,12 +909,49 @@
             const changeSign = market.change_24h >= 0 ? '+' : '';
             const signalClass = market.signal.replace(' ', '_');
 
-            // Generate candlestick patterns HTML
-            let patternsHTML = '';
-            if (market.candle_patterns && market.candle_patterns.length > 0) {
-                patternsHTML = `
+            // Generate 5-minute candlestick patterns HTML (short-term/scalping)
+            let patterns5mHTML = '';
+            if (market.candle_patterns_5m && market.candle_patterns_5m.length > 0) {
+                patterns5mHTML = `
+                    <div class="candle-patterns" style="background: #fff7ed; border-color: #f97316;">
+                        <div class="candle-patterns-title" style="color: #c2410c;">⚡ 5-Minute Patterns (Scalping/Day Trading)</div>
+                        ${market.candle_patterns_5m.map(pattern => `
+                            <div class="pattern pattern-${pattern.type}">
+                                <span class="pattern-name">${pattern.name}</span>
+                                <span style="float: right; color: #666;">Strength: ${pattern.strength}/10</span>
+                                <div style="clear: both; margin-top: 5px; font-size: 0.85em; color: #666;">
+                                    ${pattern.description}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            // Generate 4-hour candlestick patterns HTML (medium-term/swing trading)
+            let patterns4hHTML = '';
+            if (market.candle_patterns_4h && market.candle_patterns_4h.length > 0) {
+                patterns4hHTML = `
                     <div class="candle-patterns">
-                        <div class="candle-patterns-title">📊 Candlestick Patterns (4H Chart)</div>
+                        <div class="candle-patterns-title">📊 4-Hour Patterns (Swing Trading)</div>
+                        ${market.candle_patterns_4h.map(pattern => `
+                            <div class="pattern pattern-${pattern.type}">
+                                <span class="pattern-name">${pattern.name}</span>
+                                <span style="float: right; color: #666;">Strength: ${pattern.strength}/10</span>
+                                <div style="clear: both; margin-top: 5px; font-size: 0.85em; color: #666;">
+                                    ${pattern.description}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            // For backward compatibility, also check old key
+            if (!patterns4hHTML && market.candle_patterns && market.candle_patterns.length > 0) {
+                patterns4hHTML = `
+                    <div class="candle-patterns">
+                        <div class="candle-patterns-title">📊 4-Hour Patterns (Swing Trading)</div>
                         ${market.candle_patterns.map(pattern => `
                             <div class="pattern pattern-${pattern.type}">
                                 <span class="pattern-name">${pattern.name}</span>
@@ -1013,7 +1050,8 @@
                     ).join('')}
                 </div>
 
-                ${patternsHTML}
+                ${patterns5mHTML}
+                ${patterns4hHTML}
                 ${entryExitHTML}
             `;
 
