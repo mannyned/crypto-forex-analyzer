@@ -409,6 +409,19 @@ class MarketAnalyzer:
             current_price = self.fetcher.get_current_price(symbol, market_type)
             change_24h = self.fetcher.get_24h_change(symbol, market_type)
 
+            # Prepare chart data (last 100 candles for 1-hour chart)
+            chart_data = []
+            if df is not None and len(df) > 0:
+                for index, row in df.tail(100).iterrows():
+                    chart_data.append({
+                        'time': int(index.timestamp()),
+                        'open': float(row['open']),
+                        'high': float(row['high']),
+                        'low': float(row['low']),
+                        'close': float(row['close']),
+                        'volume': float(row['volume']) if 'volume' in row else 0
+                    })
+
             return {
                 'symbol': symbol,
                 'market_type': market_type,
@@ -424,6 +437,7 @@ class MarketAnalyzer:
                 'entry_exit_4h': entry_exit_data_4h,
                 'candle_patterns_5m': candle_patterns_5m,
                 'entry_exit_5m': entry_exit_data_5m,
+                'chart_data': chart_data,  # Add chart data for visualization
                 # Keep old keys for backward compatibility
                 'candle_patterns': candle_patterns_4h,
                 'entry_exit': entry_exit_data_4h
