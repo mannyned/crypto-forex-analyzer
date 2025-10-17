@@ -1250,105 +1250,123 @@
 
         function renderChart(chartId, market) {
             const container = document.getElementById(chartId);
-            if (!container) return;
-
-            // Create chart
-            const chart = LightweightCharts.createChart(container, {
-                width: container.clientWidth,
-                height: 300,
-                layout: {
-                    background: { color: '#1a1f3a' },
-                    textColor: '#a0a6b8',
-                },
-                grid: {
-                    vertLines: { color: '#2d3548' },
-                    horzLines: { color: '#2d3548' },
-                },
-                crosshair: {
-                    mode: LightweightCharts.CrosshairMode.Normal,
-                },
-                rightPriceScale: {
-                    borderColor: '#2d3548',
-                },
-                timeScale: {
-                    borderColor: '#2d3548',
-                    timeVisible: true,
-                    secondsVisible: false,
-                },
-            });
-
-            // Add candlestick series
-            const candleSeries = chart.addCandlestickSeries({
-                upColor: '#10b981',
-                downColor: '#ef4444',
-                borderUpColor: '#10b981',
-                borderDownColor: '#ef4444',
-                wickUpColor: '#10b981',
-                wickDownColor: '#ef4444',
-            });
-
-            // Set chart data
-            candleSeries.setData(market.chart_data);
-
-            // Add volume series
-            const volumeSeries = chart.addHistogramSeries({
-                color: '#3b82f6',
-                priceFormat: {
-                    type: 'volume',
-                },
-                priceScaleId: '',
-                scaleMargins: {
-                    top: 0.8,
-                    bottom: 0,
-                },
-            });
-
-            // Set volume data
-            const volumeData = market.chart_data.map(d => ({
-                time: d.time,
-                value: d.volume,
-                color: d.close >= d.open ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'
-            }));
-            volumeSeries.setData(volumeData);
-
-            // Add moving averages if available
-            if (market.indicators) {
-                // SMA 20 (short-term)
-                if (market.indicators.sma_20) {
-                    const sma20Line = chart.addLineSeries({
-                        color: '#3b82f6',
-                        lineWidth: 2,
-                        title: 'SMA 20',
-                    });
-                    const sma20Data = market.chart_data.slice(-50).map((d, i) => ({
-                        time: d.time,
-                        value: market.indicators.sma_20
-                    }));
-                    sma20Line.setData([sma20Data[sma20Data.length - 1]]);
-                }
-
-                // SMA 50 (medium-term)
-                if (market.indicators.sma_50) {
-                    const sma50Line = chart.addLineSeries({
-                        color: '#f59e0b',
-                        lineWidth: 2,
-                        title: 'SMA 50',
-                    });
-                    const sma50Data = market.chart_data.slice(-50).map((d, i) => ({
-                        time: d.time,
-                        value: market.indicators.sma_50
-                    }));
-                    sma50Line.setData([sma50Data[sma50Data.length - 1]]);
-                }
+            if (!container) {
+                console.error('Chart container not found:', chartId);
+                return;
             }
 
-            // Fit content
-            chart.timeScale().fitContent();
+            if (!market.chart_data || market.chart_data.length === 0) {
+                console.error('No chart data available');
+                return;
+            }
 
-            // Handle window resize
-            window.addEventListener('resize', () => {
-                chart.applyOptions({ width: container.clientWidth });
-            });
+            try {
+                console.log('Rendering chart for', market.symbol, 'with', market.chart_data.length, 'candles');
+
+                // Create chart
+                const chart = LightweightCharts.createChart(container, {
+                    width: container.clientWidth,
+                    height: 300,
+                    layout: {
+                        background: { color: '#1a1f3a' },
+                        textColor: '#a0a6b8',
+                    },
+                    grid: {
+                        vertLines: { color: '#2d3548' },
+                        horzLines: { color: '#2d3548' },
+                    },
+                    crosshair: {
+                        mode: LightweightCharts.CrosshairMode.Normal,
+                    },
+                    rightPriceScale: {
+                        borderColor: '#2d3548',
+                    },
+                    timeScale: {
+                        borderColor: '#2d3548',
+                        timeVisible: true,
+                        secondsVisible: false,
+                    },
+                });
+
+                // Add candlestick series
+                const candleSeries = chart.addCandlestickSeries({
+                    upColor: '#10b981',
+                    downColor: '#ef4444',
+                    borderUpColor: '#10b981',
+                    borderDownColor: '#ef4444',
+                    wickUpColor: '#10b981',
+                    wickDownColor: '#ef4444',
+                });
+
+                // Set chart data
+                candleSeries.setData(market.chart_data);
+                console.log('Chart data set successfully');
+
+                // Add volume series
+                const volumeSeries = chart.addHistogramSeries({
+                    color: '#3b82f6',
+                    priceFormat: {
+                        type: 'volume',
+                    },
+                    priceScaleId: '',
+                    scaleMargins: {
+                        top: 0.8,
+                        bottom: 0,
+                    },
+                });
+
+                // Set volume data
+                const volumeData = market.chart_data.map(d => ({
+                    time: d.time,
+                    value: d.volume,
+                    color: d.close >= d.open ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'
+                }));
+                volumeSeries.setData(volumeData);
+
+                // Add moving averages if available
+                if (market.indicators) {
+                    // SMA 20 (short-term)
+                    if (market.indicators.sma_20) {
+                        const sma20Line = chart.addLineSeries({
+                            color: '#3b82f6',
+                            lineWidth: 2,
+                            title: 'SMA 20',
+                        });
+                        const sma20Data = market.chart_data.slice(-50).map((d, i) => ({
+                            time: d.time,
+                            value: market.indicators.sma_20
+                        }));
+                        sma20Line.setData([sma20Data[sma20Data.length - 1]]);
+                    }
+
+                    // SMA 50 (medium-term)
+                    if (market.indicators.sma_50) {
+                        const sma50Line = chart.addLineSeries({
+                            color: '#f59e0b',
+                            lineWidth: 2,
+                            title: 'SMA 50',
+                        });
+                        const sma50Data = market.chart_data.slice(-50).map((d, i) => ({
+                            time: d.time,
+                            value: market.indicators.sma_50
+                        }));
+                        sma50Line.setData([sma50Data[sma50Data.length - 1]]);
+                    }
+                }
+
+                // Fit content
+                chart.timeScale().fitContent();
+
+                // Handle window resize
+                window.addEventListener('resize', () => {
+                    chart.applyOptions({ width: container.clientWidth });
+                });
+
+                console.log('Chart rendered successfully for', market.symbol);
+            } catch (error) {
+                console.error('Error rendering chart:', error);
+                container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 40px;">Chart unavailable</div>';
+            }
         }
 
         function switchResultsTab(tab) {
