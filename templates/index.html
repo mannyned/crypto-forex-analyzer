@@ -43,13 +43,149 @@
             font-size: 1.1em;
         }
 
-        .controls {
+        .selection-panel {
             background: white;
-            padding: 20px;
+            padding: 30px;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             margin-bottom: 30px;
-            text-align: center;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .market-type-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .market-type-tab {
+            padding: 15px 30px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .market-type-tab:hover {
+            color: #667eea;
+        }
+
+        .market-type-tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .market-selection {
+            display: none;
+        }
+
+        .market-selection.active {
+            display: block;
+        }
+
+        .select-all-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 10px;
+        }
+
+        .select-all-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .select-all-label input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .selected-count {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .market-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .market-checkbox {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .market-checkbox:hover {
+            border-color: #667eea;
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .market-checkbox.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        }
+
+        .market-checkbox label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .market-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .market-info {
+            flex: 1;
+        }
+
+        .market-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .market-symbol {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        .analyze-section {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
         }
 
         .btn {
@@ -62,6 +198,7 @@
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-weight: bold;
         }
 
         .btn:hover {
@@ -73,6 +210,16 @@
             background: #ccc;
             cursor: not-allowed;
             transform: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #f9fafb;
         }
 
         .loading {
@@ -102,13 +249,38 @@
             100% { transform: rotate(360deg); }
         }
 
-        .tabs {
+        .results-section {
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .results-header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .results-title {
+            font-size: 1.5em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .results-tabs {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
         }
 
-        .tab {
+        .results-tab {
             flex: 1;
             background: white;
             padding: 15px;
@@ -120,24 +292,24 @@
             box-shadow: 0 3px 10px rgba(0,0,0,0.2);
         }
 
-        .tab:hover {
+        .results-tab:hover {
             transform: translateY(-2px);
         }
 
-        .tab.active {
+        .results-tab.active {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
 
-        .tab-content {
+        .results-content {
             display: none;
         }
 
-        .tab-content.active {
+        .results-content.active {
             display: block;
         }
 
-        .market-grid {
+        .market-cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 20px;
@@ -166,13 +338,13 @@
             border-bottom: 2px solid #f0f0f0;
         }
 
-        .market-name {
+        .card-market-name {
             font-size: 1.3em;
             font-weight: bold;
             color: #333;
         }
 
-        .market-symbol {
+        .card-market-symbol {
             color: #999;
             font-size: 0.9em;
         }
@@ -416,6 +588,14 @@
             color: #7f1d1d;
             text-align: center;
         }
+
+        .no-results {
+            background: white;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -425,41 +605,88 @@
             <p class="subtitle">Professional Technical Analysis with 40+ Indicators</p>
         </header>
 
-        <div class="controls">
-            <button class="btn" id="analyzeBtn" onclick="analyzeMarkets()">
-                Analyze Markets
-            </button>
+        <!-- Market Selection Panel -->
+        <div class="selection-panel" id="selectionPanel">
+            <h2 class="section-title">Select Markets to Analyze</h2>
+
+            <div class="market-type-tabs">
+                <button class="market-type-tab active" onclick="switchMarketType('crypto')">
+                    Cryptocurrencies
+                </button>
+                <button class="market-type-tab" onclick="switchMarketType('forex')">
+                    Forex Pairs
+                </button>
+            </div>
+
+            <!-- Crypto Selection -->
+            <div id="crypto-selection" class="market-selection active">
+                <div class="select-all-section">
+                    <label class="select-all-label">
+                        <input type="checkbox" id="selectAllCrypto" onchange="toggleSelectAll('crypto')">
+                        Select All Cryptocurrencies
+                    </label>
+                    <span class="selected-count" id="cryptoCount">0 selected</span>
+                </div>
+                <div class="market-grid" id="cryptoGrid">
+                    <!-- Crypto markets will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Forex Selection -->
+            <div id="forex-selection" class="market-selection">
+                <div class="select-all-section">
+                    <label class="select-all-label">
+                        <input type="checkbox" id="selectAllForex" onchange="toggleSelectAll('forex')">
+                        Select All Forex Pairs
+                    </label>
+                    <span class="selected-count" id="forexCount">0 selected</span>
+                </div>
+                <div class="market-grid" id="forexGrid">
+                    <!-- Forex markets will be loaded here -->
+                </div>
+            </div>
+
+            <div class="analyze-section">
+                <button class="btn" id="analyzeBtn" onclick="analyzeSelected()">
+                    Analyze Selected Markets
+                </button>
+                <button class="btn btn-secondary" onclick="clearSelection()">
+                    Clear Selection
+                </button>
+            </div>
         </div>
 
+        <!-- Loading Indicator -->
         <div class="loading" id="loading">
             <div class="spinner"></div>
             <p>Analyzing markets with 40+ technical indicators...</p>
-            <p>This may take 30-60 seconds...</p>
+            <p id="loadingProgress">Preparing analysis...</p>
         </div>
 
-        <div id="results" style="display: none;">
-            <div class="tabs">
-                <div class="tab active" onclick="switchTab('opportunities')">
-                    Top Opportunities
-                </div>
-                <div class="tab" onclick="switchTab('crypto')">
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <div class="results-header">
+                <h2 class="results-title">Analysis Results</h2>
+                <button class="btn" onclick="backToSelection()">
+                    Analyze More Markets
+                </button>
+            </div>
+
+            <div class="results-tabs">
+                <div class="results-tab active" onclick="switchResultsTab('crypto')">
                     Cryptocurrencies
                 </div>
-                <div class="tab" onclick="switchTab('forex')">
+                <div class="results-tab" onclick="switchResultsTab('forex')">
                     Forex Pairs
                 </div>
             </div>
 
-            <div id="opportunities" class="tab-content active">
-                <div class="market-grid" id="opportunitiesGrid"></div>
+            <div id="crypto-results" class="results-content active">
+                <div class="market-cards-grid" id="cryptoResultsGrid"></div>
             </div>
 
-            <div id="crypto" class="tab-content">
-                <div class="market-grid" id="cryptoGrid"></div>
-            </div>
-
-            <div id="forex" class="tab-content">
-                <div class="market-grid" id="forexGrid"></div>
+            <div id="forex-results" class="results-content">
+                <div class="market-cards-grid" id="forexResultsGrid"></div>
             </div>
         </div>
 
@@ -472,63 +699,199 @@
     </div>
 
     <script>
-        let currentTab = 'opportunities';
+        let availableMarkets = { crypto: [], forex: [] };
+        let selectedMarkets = { crypto: new Set(), forex: new Set() };
+        let currentMarketType = 'crypto';
+        let currentResultsTab = 'crypto';
 
-        function switchTab(tabName) {
-            currentTab = tabName;
+        // Load available markets on page load
+        window.addEventListener('DOMContentLoaded', loadMarkets);
 
-            // Update tab buttons
-            document.querySelectorAll('.tab').forEach(tab => {
+        async function loadMarkets() {
+            try {
+                const response = await fetch('/api/markets');
+                const data = await response.json();
+
+                if (data.success) {
+                    availableMarkets = data.data;
+                    renderMarketGrid('crypto');
+                    renderMarketGrid('forex');
+                }
+            } catch (error) {
+                console.error('Error loading markets:', error);
+            }
+        }
+
+        function renderMarketGrid(type) {
+            const grid = document.getElementById(`${type}Grid`);
+            grid.innerHTML = '';
+
+            availableMarkets[type].forEach(market => {
+                const div = document.createElement('div');
+                div.className = 'market-checkbox';
+                div.id = `market-${type}-${market.symbol.replace(/[^a-zA-Z0-9]/g, '')}`;
+
+                div.innerHTML = `
+                    <label>
+                        <input type="checkbox" value="${market.symbol}" onchange="toggleMarket('${type}', '${market.symbol}')">
+                        <div class="market-info">
+                            <div class="market-name">${market.name}</div>
+                            <div class="market-symbol">${market.symbol}</div>
+                        </div>
+                    </label>
+                `;
+
+                grid.appendChild(div);
+            });
+        }
+
+        function switchMarketType(type) {
+            currentMarketType = type;
+
+            // Update tabs
+            document.querySelectorAll('.market-type-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
             event.target.classList.add('active');
 
-            // Update tab content
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
+            // Update content
+            document.querySelectorAll('.market-selection').forEach(selection => {
+                selection.classList.remove('active');
             });
-            document.getElementById(tabName).classList.add('active');
+            document.getElementById(`${type}-selection`).classList.add('active');
         }
 
-        async function analyzeMarkets() {
-            const btn = document.getElementById('analyzeBtn');
-            const loading = document.getElementById('loading');
-            const results = document.getElementById('results');
+        function toggleMarket(type, symbol) {
+            if (selectedMarkets[type].has(symbol)) {
+                selectedMarkets[type].delete(symbol);
+            } else {
+                selectedMarkets[type].add(symbol);
+            }
 
-            btn.disabled = true;
+            updateSelectedCount(type);
+            updateMarketCardStyle(type, symbol);
+            updateSelectAllCheckbox(type);
+        }
+
+        function updateMarketCardStyle(type, symbol) {
+            const card = document.getElementById(`market-${type}-${symbol.replace(/[^a-zA-Z0-9]/g, '')}`);
+            if (selectedMarkets[type].has(symbol)) {
+                card.classList.add('selected');
+            } else {
+                card.classList.remove('selected');
+            }
+        }
+
+        function toggleSelectAll(type) {
+            const checkbox = document.getElementById(`selectAll${type.charAt(0).toUpperCase() + type.slice(1)}`);
+            const checkboxes = document.querySelectorAll(`#${type}Grid input[type="checkbox"]`);
+
+            checkboxes.forEach(cb => {
+                cb.checked = checkbox.checked;
+                const symbol = cb.value;
+
+                if (checkbox.checked) {
+                    selectedMarkets[type].add(symbol);
+                } else {
+                    selectedMarkets[type].delete(symbol);
+                }
+                updateMarketCardStyle(type, symbol);
+            });
+
+            updateSelectedCount(type);
+        }
+
+        function updateSelectAllCheckbox(type) {
+            const selectAllCheckbox = document.getElementById(`selectAll${type.charAt(0).toUpperCase() + type.slice(1)}`);
+            const totalMarkets = availableMarkets[type].length;
+            const selectedCount = selectedMarkets[type].size;
+
+            selectAllCheckbox.checked = selectedCount === totalMarkets && totalMarkets > 0;
+        }
+
+        function updateSelectedCount(type) {
+            const count = selectedMarkets[type].size;
+            document.getElementById(`${type}Count`).textContent = `${count} selected`;
+        }
+
+        function clearSelection() {
+            ['crypto', 'forex'].forEach(type => {
+                selectedMarkets[type].clear();
+                document.querySelectorAll(`#${type}Grid input[type="checkbox"]`).forEach(cb => {
+                    cb.checked = false;
+                });
+                document.querySelectorAll(`#${type}Grid .market-checkbox`).forEach(card => {
+                    card.classList.remove('selected');
+                });
+                updateSelectedCount(type);
+                updateSelectAllCheckbox(type);
+            });
+        }
+
+        async function analyzeSelected() {
+            const totalSelected = selectedMarkets.crypto.size + selectedMarkets.forex.size;
+
+            if (totalSelected === 0) {
+                alert('Please select at least one market to analyze');
+                return;
+            }
+
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const loading = document.getElementById('loading');
+            const selectionPanel = document.getElementById('selectionPanel');
+            const resultsSection = document.getElementById('resultsSection');
+
+            analyzeBtn.disabled = true;
             loading.classList.add('active');
-            results.style.display = 'none';
+            selectionPanel.style.display = 'none';
+            resultsSection.classList.remove('active');
 
             try {
-                const response = await fetch('/api/analyze');
+                const requestData = {
+                    crypto: Array.from(selectedMarkets.crypto),
+                    forex: Array.from(selectedMarkets.forex)
+                };
+
+                document.getElementById('loadingProgress').textContent =
+                    `Analyzing ${totalSelected} market${totalSelected > 1 ? 's' : ''}...`;
+
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
                 const data = await response.json();
 
                 if (data.success) {
                     displayResults(data.data);
-                    results.style.display = 'block';
+                    resultsSection.classList.add('active');
                 } else {
-                    showError(data.error);
+                    alert('Error: ' + data.error);
+                    selectionPanel.style.display = 'block';
                 }
             } catch (error) {
-                showError('Failed to analyze markets: ' + error.message);
+                alert('Failed to analyze markets: ' + error.message);
+                selectionPanel.style.display = 'block';
             } finally {
-                btn.disabled = false;
+                analyzeBtn.disabled = false;
                 loading.classList.remove('active');
             }
         }
 
         function displayResults(data) {
-            displayMarkets(data.top_opportunities, 'opportunitiesGrid');
-            displayMarkets(data.crypto, 'cryptoGrid');
-            displayMarkets(data.forex, 'forexGrid');
+            displayMarketResults(data.crypto, 'cryptoResultsGrid');
+            displayMarketResults(data.forex, 'forexResultsGrid');
         }
 
-        function displayMarkets(markets, gridId) {
+        function displayMarketResults(markets, gridId) {
             const grid = document.getElementById(gridId);
             grid.innerHTML = '';
 
             if (!markets || markets.length === 0) {
-                grid.innerHTML = '<p class="error">No markets to display</p>';
+                grid.innerHTML = '<div class="no-results">No results to display</div>';
                 return;
             }
 
@@ -621,8 +984,8 @@
             card.innerHTML = `
                 <div class="market-header">
                     <div>
-                        <div class="market-name">${market.name || market.symbol}</div>
-                        <div class="market-symbol">${market.symbol}</div>
+                        <div class="card-market-name">${market.name || market.symbol}</div>
+                        <div class="card-market-symbol">${market.symbol}</div>
                     </div>
                 </div>
 
@@ -657,10 +1020,25 @@
             return card;
         }
 
-        function showError(message) {
-            const results = document.getElementById('results');
-            results.style.display = 'block';
-            results.innerHTML = `<div class="error"><strong>Error:</strong> ${message}</div>`;
+        function switchResultsTab(tab) {
+            currentResultsTab = tab;
+
+            // Update tab buttons
+            document.querySelectorAll('.results-tab').forEach(t => {
+                t.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.results-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${tab}-results`).classList.add('active');
+        }
+
+        function backToSelection() {
+            document.getElementById('selectionPanel').style.display = 'block';
+            document.getElementById('resultsSection').classList.remove('active');
         }
     </script>
 </body>
