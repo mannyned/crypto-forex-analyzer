@@ -156,7 +156,8 @@ CRYPTO_PAIRS = [
     'ADA/USDT',   # Will convert to ADA-USD
     'SOL/USDT',   # Will convert to SOL-USD
     'XRP/USDT',   # Will convert to XRP-USD
-    'DOT/USDT'    # Will convert to DOT-USD
+    'DOT/USDT',   # Will convert to DOT-USD
+    'DOGE/USDT'   # Will convert to DOGE-USD
 ]
 
 FOREX_PAIRS = [
@@ -176,7 +177,8 @@ CRYPTO_NAMES = {
     'ADA/USDT': 'Cardano',
     'SOL/USDT': 'Solana',
     'XRP/USDT': 'Ripple',
-    'DOT/USDT': 'Polkadot'
+    'DOT/USDT': 'Polkadot',
+    'DOGE/USDT': 'Dogecoin'
 }
 
 FOREX_NAMES = {

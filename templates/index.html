@@ -14,27 +14,27 @@
         }
 
         :root {
-            --bg-primary: #0a0e27;
-            --bg-secondary: #131829;
-            --bg-tertiary: #1a1f3a;
-            --bg-card: #1e2439;
-            --bg-hover: #252b47;
-            --border-color: #2d3548;
-            --border-accent: #3d4563;
+            --bg-primary: #0d0d0d;
+            --bg-secondary: #171717;
+            --bg-tertiary: #1f1f1f;
+            --bg-card: #232323;
+            --bg-hover: #2a2a2a;
+            --border-color: #2d2d2d;
+            --border-accent: #3a3a3a;
 
-            --text-primary: #e4e6eb;
-            --text-secondary: #a0a6b8;
-            --text-muted: #6b7280;
+            --text-primary: #e8e8e8;
+            --text-secondary: #b0b0b0;
+            --text-muted: #707070;
 
-            --accent-primary: #3b82f6;
-            --accent-secondary: #8b5cf6;
-            --accent-success: #10b981;
-            --accent-danger: #ef4444;
-            --accent-warning: #f59e0b;
+            --accent-primary: #00d4ff;
+            --accent-secondary: #7c3aed;
+            --accent-success: #00ff88;
+            --accent-danger: #ff3366;
+            --accent-warning: #ffaa00;
 
-            --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-            --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            --gradient-danger: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --gradient-primary: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+            --gradient-success: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            --gradient-danger: linear-gradient(135deg, #ff3366 0%, #cc0033 100%);
         }
 
         body {
@@ -713,6 +713,83 @@
             font-weight: 600;
         }
 
+        /* Lot Calculator */
+        .lot-calc-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .lot-calc-form input {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.9375rem;
+        }
+
+        .lot-calc-form input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .lot-calc-form button {
+            grid-column: 1 / -1;
+            padding: 12px;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .lot-calc-form button:hover {
+            transform: translateY(-2px);
+        }
+
+        .lot-calc-results {
+            margin-top: 15px;
+            padding: 15px;
+            background: var(--bg-card);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .lot-calc-result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9375rem;
+        }
+
+        .lot-calc-result-row:last-child {
+            border-bottom: none;
+        }
+
+        .lot-calc-result-label {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .lot-calc-result-value {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .lot-calc-highlight {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
         /* Chart Container */
         .chart-container {
             margin-top: 20px;
@@ -1191,6 +1268,45 @@
                 `;
             }
 
+            // Generate lot calculator HTML for forex pairs
+            let lotCalculatorHTML = '';
+            const isForexPair = market.symbol && market.symbol.includes('=X');
+            if (isForexPair) {
+                // Calculate default stop loss in pips from entry/exit data
+                let defaultStopLossPips = 50; // Default value
+                let takeProfitPips = 100; // Default 2:1 ratio
+                let entryPrice = 0;
+                let stopLossPrice = 0;
+                let takeProfitPrice = 0;
+
+                if (market.entry_exit && market.entry_exit.entry_price && market.entry_exit.stop_loss) {
+                    const pipSize = market.symbol.includes('JPY') ? 0.01 : 0.0001;
+                    defaultStopLossPips = Math.round(Math.abs(market.entry_exit.entry_price - market.entry_exit.stop_loss) / pipSize);
+                    entryPrice = market.entry_exit.entry_price;
+                    stopLossPrice = market.entry_exit.stop_loss;
+
+                    // Calculate take profit pips if available
+                    if (market.entry_exit.take_profit) {
+                        takeProfitPips = Math.round(Math.abs(market.entry_exit.take_profit - market.entry_exit.entry_price) / pipSize);
+                        takeProfitPrice = market.entry_exit.take_profit;
+                    }
+                }
+
+                const lotCalcId = `lot-calc-${chartCounter}`;
+                lotCalculatorHTML = `
+                    <div class="entry-exit" style="border-color: rgba(59, 130, 246, 0.3);">
+                        <div class="entry-exit-title" style="color: var(--accent-primary);">📊 Lot Size Calculator</div>
+                        <form class="lot-calc-form" id="form-${lotCalcId}" onsubmit="calculateLotSize(event, '${market.symbol}', '${lotCalcId}', ${defaultStopLossPips}, ${takeProfitPips})">
+                            <input type="number" name="accountBalance" placeholder="Account Balance (USD)" value="10000" min="1" step="0.01" required>
+                            <input type="number" name="riskPercent" placeholder="Risk %" value="1" min="0.1" max="100" step="0.1" required>
+                            <input type="number" name="stopLossPips" placeholder="Stop Loss (Pips)" value="${defaultStopLossPips}" min="1" step="1" required>
+                            <button type="submit">Calculate Lot Size</button>
+                        </form>
+                        <div class="lot-calc-results" id="results-${lotCalcId}" style="display:none;"></div>
+                    </div>
+                `;
+            }
+
             card.innerHTML = `
                 <div class="market-header">
                     <div>
@@ -1238,6 +1354,7 @@
                 ${patterns5mHTML}
                 ${patterns4hHTML}
                 ${entryExitHTML}
+                ${lotCalculatorHTML}
             `;
 
             // Render chart if data is available
@@ -1268,21 +1385,21 @@
                     width: container.clientWidth,
                     height: 300,
                     layout: {
-                        background: { color: '#1a1f3a' },
-                        textColor: '#a0a6b8',
+                        background: { color: '#1f1f1f' },
+                        textColor: '#b0b0b0',
                     },
                     grid: {
-                        vertLines: { color: '#2d3548' },
-                        horzLines: { color: '#2d3548' },
+                        vertLines: { color: '#2d2d2d' },
+                        horzLines: { color: '#2d2d2d' },
                     },
                     crosshair: {
                         mode: LightweightCharts.CrosshairMode.Normal,
                     },
                     rightPriceScale: {
-                        borderColor: '#2d3548',
+                        borderColor: '#2d2d2d',
                     },
                     timeScale: {
-                        borderColor: '#2d3548',
+                        borderColor: '#2d2d2d',
                         timeVisible: true,
                         secondsVisible: false,
                     },
@@ -1290,12 +1407,12 @@
 
                 // Add candlestick series
                 const candleSeries = chart.addCandlestickSeries({
-                    upColor: '#10b981',
-                    downColor: '#ef4444',
-                    borderUpColor: '#10b981',
-                    borderDownColor: '#ef4444',
-                    wickUpColor: '#10b981',
-                    wickDownColor: '#ef4444',
+                    upColor: '#00ff88',
+                    downColor: '#ff3366',
+                    borderUpColor: '#00ff88',
+                    borderDownColor: '#ff3366',
+                    wickUpColor: '#00ff88',
+                    wickDownColor: '#ff3366',
                 });
 
                 // Set chart data
@@ -1304,7 +1421,7 @@
 
                 // Add volume series
                 const volumeSeries = chart.addHistogramSeries({
-                    color: '#3b82f6',
+                    color: '#00d4ff',
                     priceFormat: {
                         type: 'volume',
                     },
@@ -1319,7 +1436,7 @@
                 const volumeData = market.chart_data.map(d => ({
                     time: d.time,
                     value: d.volume,
-                    color: d.close >= d.open ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'
+                    color: d.close >= d.open ? 'rgba(0, 255, 136, 0.3)' : 'rgba(255, 51, 102, 0.3)'
                 }));
                 volumeSeries.setData(volumeData);
 
@@ -1328,7 +1445,7 @@
                     // SMA 20 (short-term)
                     if (market.indicators.sma_20) {
                         const sma20Line = chart.addLineSeries({
-                            color: '#3b82f6',
+                            color: '#00d4ff',
                             lineWidth: 2,
                             title: 'SMA 20',
                         });
@@ -1342,7 +1459,7 @@
                     // SMA 50 (medium-term)
                     if (market.indicators.sma_50) {
                         const sma50Line = chart.addLineSeries({
-                            color: '#f59e0b',
+                            color: '#ffaa00',
                             lineWidth: 2,
                             title: 'SMA 50',
                         });
@@ -1388,6 +1505,101 @@
         function backToSelection() {
             document.getElementById('selectionPanel').style.display = 'block';
             document.getElementById('resultsSection').classList.remove('active');
+        }
+
+        async function calculateLotSize(event, pair, lotCalcId, stopLossPips = 50, takeProfitPips = 100) {
+            event.preventDefault();
+
+            const form = event.target;
+            const accountBalance = parseFloat(form.accountBalance.value);
+            const riskPercent = parseFloat(form.riskPercent.value);
+            const actualStopLossPips = parseFloat(form.stopLossPips.value);
+
+            const resultsDiv = document.getElementById(`results-${lotCalcId}`);
+            resultsDiv.style.display = 'block';
+            resultsDiv.innerHTML = '<div style="text-align: center; color: var(--text-secondary);">Calculating...</div>';
+
+            try {
+                const response = await fetch('/api/lot-calculator/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        account_balance: accountBalance,
+                        risk_percentage: riskPercent,
+                        stop_loss_pips: actualStopLossPips,
+                        pair: pair,
+                        account_currency: 'USD'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const result = data.data;
+
+                    // Calculate potential take profit amount based on actual take profit target
+                    // Use the ratio of take profit pips to stop loss pips
+                    const takeProfitRatio = takeProfitPips / actualStopLossPips;
+                    const potentialTakeProfitAmount = result.risk_amount * takeProfitRatio;
+
+                    resultsDiv.innerHTML = `
+                        <div class="lot-calc-highlight">
+                            <div class="lot-calc-result-row">
+                                <span class="lot-calc-result-label">RECOMMENDED LOT SIZE</span>
+                                <span class="lot-calc-result-value" style="font-size: 1.125rem; color: var(--accent-primary);">
+                                    ${result.lot_sizes.standard_lots} Lots
+                                </span>
+                            </div>
+                        </div>
+                        <div class="lot-calc-result-row">
+                            <span class="lot-calc-result-label">Mini Lots</span>
+                            <span class="lot-calc-result-value">${result.lot_sizes.mini_lots}</span>
+                        </div>
+                        <div class="lot-calc-result-row">
+                            <span class="lot-calc-result-label">Micro Lots</span>
+                            <span class="lot-calc-result-value">${result.lot_sizes.micro_lots}</span>
+                        </div>
+                        <div class="lot-calc-result-row">
+                            <span class="lot-calc-result-label">Units</span>
+                            <span class="lot-calc-result-value">${result.lot_sizes.units.toLocaleString()}</span>
+                        </div>
+                        <div class="lot-calc-result-row" style="margin-top: 10px; padding-top: 10px; border-top: 2px solid var(--border-color);">
+                            <span class="lot-calc-result-label">Account Balance</span>
+                            <span class="lot-calc-result-value" style="color: var(--text-primary);">$${result.account_balance.toLocaleString()}</span>
+                        </div>
+                        <div class="lot-calc-result-row">
+                            <span class="lot-calc-result-label">Stop Loss Target (${actualStopLossPips} pips)</span>
+                            <span class="lot-calc-result-value" style="color: var(--accent-danger);">-$${result.risk_amount.toLocaleString()}</span>
+                        </div>
+                        <div class="lot-calc-result-row">
+                            <span class="lot-calc-result-label">Take Profit Target (${takeProfitPips} pips)</span>
+                            <span class="lot-calc-result-value" style="color: var(--accent-success);">+$${potentialTakeProfitAmount.toLocaleString()}</span>
+                        </div>
+                        <div class="lot-calc-result-row">
+                            <span class="lot-calc-result-label">Risk/Reward Ratio</span>
+                            <span class="lot-calc-result-value" style="color: var(--accent-primary);">1:${takeProfitRatio.toFixed(2)}</span>
+                        </div>
+                        <div class="lot-calc-result-row">
+                            <span class="lot-calc-result-label">Position Value</span>
+                            <span class="lot-calc-result-value">$${result.position_value.toLocaleString()}</span>
+                        </div>
+                        <div class="lot-calc-result-row">
+                            <span class="lot-calc-result-label">Risk per Pip</span>
+                            <span class="lot-calc-result-value">$${result.risk_per_pip.toFixed(2)}</span>
+                        </div>
+                        <div class="lot-calc-result-row">
+                            <span class="lot-calc-result-label">Leverage Required</span>
+                            <span class="lot-calc-result-value">${result.leverage_required.toFixed(2)}:1</span>
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `<div style="color: var(--accent-danger); text-align: center;">Error: ${data.error}</div>`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<div style="color: var(--accent-danger); text-align: center;">Error calculating lot size: ${error.message}</div>`;
+            }
         }
     </script>
 </body>

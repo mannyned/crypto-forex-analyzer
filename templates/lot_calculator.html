@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forex Lot Size Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0e27;
+            --bg-secondary: #131829;
+            --bg-tertiary: #1a1f3a;
+            --bg-card: #1e2439;
+            --bg-hover: #252b47;
+            --border-color: #2d3548;
+            --text-primary: #e4e6eb;
+            --text-secondary: #a0a6b8;
+            --text-muted: #6b7280;
+            --accent-primary: #3b82f6;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        h1 {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5em;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+        }
+
+        .nav-link {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover {
+            background: var(--bg-hover);
+            color: var(--accent-primary);
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: border 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .btn {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .results {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .result-value {
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 1.125rem;
+        }
+
+        .highlight {
+            background: var(--gradient-primary);
+            padding: 16px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .highlight .result-value {
+            font-size: 1.5rem;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--accent-primary);
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .info-box h3 {
+            color: var(--accent-primary);
+            margin-bottom: 10px;
+            font-size: 1.125rem;
+        }
+
+        .info-box p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-size: 0.9375rem;
+        }
+
+        .disclaimer {
+            background: var(--bg-secondary);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        .disclaimer strong {
+            color: var(--accent-warning);
+            font-size: 1.125rem;
+        }
+
+        .disclaimer p {
+            color: var(--text-secondary);
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Forex Lot Size Calculator</h1>
+            <p class="subtitle">Professional Risk Management & Position Sizing Tool</p>
+            <a href="/" class="nav-link">Back to Market Analyzer</a>
+        </header>
+
+        <div class="calculator-grid">
+            <div class="card">
+                <h2 class="card-title">Position Size Calculator</h2>
+                <form id="lotSizeForm">
+                    <div class="form-group">
+                        <label for="accountBalance">Account Balance (USD)</label>
+                        <input type="number" id="accountBalance" value="10000" min="1" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="riskPercentage">Risk Per Trade (%)</label>
+                        <input type="number" id="riskPercentage" value="1" min="0.1" max="100" step="0.1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stopLossPips">Stop Loss (Pips)</label>
+                        <input type="number" id="stopLossPips" value="50" min="1" step="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="currencyPair">Currency Pair</label>
+                        <select id="currencyPair" required>
+                            <option value="EURUSD=X">EUR/USD</option>
+                            <option value="GBPUSD=X">GBP/USD</option>
+                            <option value="USDJPY=X">USD/JPY</option>
+                            <option value="AUDUSD=X">AUD/USD</option>
+                            <option value="USDCAD=X">USD/CAD</option>
+                            <option value="USDCHF=X">USD/CHF</option>
+                            <option value="NZDUSD=X">NZD/USD</option>
+                            <option value="EURGBP=X">EUR/GBP</option>
+                            <option value="EURJPY=X">EUR/JPY</option>
+                            <option value="GBPJPY=X">GBP/JPY</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn">Calculate Lot Size</button>
+                </form>
+
+                <div id="results" class="results" style="display:none;">
+                    <h3 style="margin-bottom:15px; color: var(--accent-primary);">Recommended Position Size</h3>
+                    <div id="resultsContent"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Quick Reference Guide</h2>
+
+                <div class="info-box">
+                    <h3>Lot Sizes Explained</h3>
+                    <p>
+                        <strong>Standard Lot:</strong> 100,000 units (~$10/pip)<br>
+                        <strong>Mini Lot:</strong> 10,000 units (~$1/pip)<br>
+                        <strong>Micro Lot:</strong> 1,000 units (~$0.10/pip)<br>
+                        <strong>Nano Lot:</strong> 100 units (~$0.01/pip)
+                    </p>
+                </div>
+
+                <div class="info-box" style="margin-top:20px;">
+                    <h3>Risk Management Tips</h3>
+                    <p>
+                        • Never risk more than 1-2% of your account per trade<br>
+                        • Always use stop losses to protect your capital<br>
+                        • Calculate position size BEFORE entering a trade<br>
+                        • Account for slippage and spread in your calculations<br>
+                        • Adjust lot size based on account balance changes
+                    </p>
+                </div>
+
+                <div class="info-box" style="margin-top:20px;">
+                    <h3>How It Works</h3>
+                    <p>
+                        This calculator determines the optimal lot size based on your account balance,
+                        risk tolerance, and stop loss distance. It ensures you never risk more than
+                        your specified percentage per trade, following professional risk management principles.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            <strong>DISCLAIMER:</strong>
+            <p>This tool is for educational and informational purposes only. It does NOT constitute financial advice.
+            Trading forex carries substantial risk of loss. Always do your own research and consult with licensed
+            financial advisors before making investment decisions.</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('lotSizeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const accountBalance = parseFloat(document.getElementById('accountBalance').value);
+            const riskPercentage = parseFloat(document.getElementById('riskPercentage').value);
+            const stopLossPips = parseFloat(document.getElementById('stopLossPips').value);
+            const pair = document.getElementById('currencyPair').value;
+
+            try {
+                const response = await fetch('/api/lot-calculator/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        account_balance: accountBalance,
+                        risk_percentage: riskPercentage,
+                        stop_loss_pips: stopLossPips,
+                        pair: pair,
+                        account_currency: 'USD'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    displayResults(data.data);
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error calculating lot size: ' + error.message);
+            }
+        });
+
+        function displayResults(data) {
+            const resultsDiv = document.getElementById('results');
+            const resultsContent = document.getElementById('resultsContent');
+
+            resultsContent.innerHTML = `
+                <div class="highlight">
+                    <div class="result-row">
+                        <span class="result-label">RECOMMENDED LOT SIZE</span>
+                        <span class="result-value">${data.lot_sizes.standard_lots} Standard Lots</span>
+                    </div>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">Mini Lots</span>
+                    <span class="result-value">${data.lot_sizes.mini_lots}</span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">Micro Lots</span>
+                    <span class="result-value">${data.lot_sizes.micro_lots}</span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">Units</span>
+                    <span class="result-value">${data.lot_sizes.units.toLocaleString()}</span>
+                </div>
+
+                <div style="margin-top:20px; padding-top:20px; border-top: 2px solid var(--border-color);">
+                    <div class="result-row">
+                        <span class="result-label">Risk Amount</span>
+                        <span class="result-value">$${data.risk_amount.toLocaleString()}</span>
+                    </div>
+
+                    <div class="result-row">
+                        <span class="result-label">Position Value</span>
+                        <span class="result-value">$${data.position_value.toLocaleString()}</span>
+                    </div>
+
+                    <div class="result-row">
+                        <span class="result-label">Risk Per Pip</span>
+                        <span class="result-value">$${data.risk_per_pip.toFixed(2)}</span>
+                    </div>
+
+                    <div class="result-row">
+                        <span class="result-label">Leverage Required</span>
+                        <span class="result-value">${data.leverage_required.toFixed(2)}:1</span>
+                    </div>
+                </div>
+            `;
+
+            resultsDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
