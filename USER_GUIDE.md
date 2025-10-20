@@ -18,17 +18,19 @@
 
 The Crypto & Forex Market Analyzer is a professional-grade trading analysis tool that helps you make informed trading decisions by analyzing:
 
-- **7 Cryptocurrencies:** BTC, ETH, BNB, ADA, SOL, XRP, DOT
+- **8 Cryptocurrencies:** BTC, ETH, BNB, ADA, SOL, XRP, DOT, DOGE
 - **6 Forex Pairs:** EUR/USD, GBP/USD, USD/JPY, AUD/USD, USD/CAD, USD/CHF
 
 ### Key Features
 
-✅ **42+ Technical Indicators** - Comprehensive analysis using industry-standard indicators
-✅ **Candlestick Pattern Recognition** - Identifies 8 powerful chart patterns
-✅ **Dynamic Stop Loss & Take Profit** - Intelligent risk management recommendations
-✅ **Sentiment Analysis** - Market sentiment scoring
-✅ **Real-time Analysis** - Up-to-date market data
-✅ **Interactive Dashboard** - User-friendly web interface
+✅ **Multi-Page Application** - Separate crypto and forex dashboards with professional home page
+✅ **Machine Learning Price Prediction** - 4-model ensemble (RF, GB, XGB, LSTM) for forex pairs
+✅ **40+ Technical Indicators** - Comprehensive analysis using industry-standard indicators
+✅ **Candlestick Pattern Recognition** - Identifies 8 powerful chart patterns on multiple timeframes
+✅ **Dynamic Stop Loss & Take Profit** - Intelligent risk management with ATR and support/resistance
+✅ **Integrated Lot Size Calculator** - Professional position sizing for forex trading
+✅ **Real-time Analysis** - Up-to-date market data from Yahoo Finance
+✅ **Neural Dark Theme** - Modern, sleek UI design throughout
 
 ### Who Is This For?
 
@@ -89,15 +91,69 @@ Open your web browser and navigate to:
 http://localhost:3000
 ```
 
-You should see the Market Analyzer dashboard!
+You should see the professional home page with options to choose **Cryptocurrency** or **Forex** analysis!
 
 ---
 
 ## Features Overview
 
-### 1. Technical Indicators (42+)
+### 1. Multi-Page Application
 
-The application analyzes markets using 42+ technical indicators across 5 categories:
+The application has been redesigned with separate dashboards for optimal user experience:
+
+#### Home Page (`/`)
+- Professional landing page with market selection
+- Quick statistics (8 crypto pairs, 6 forex pairs, 40+ indicators)
+- Direct navigation to specialized dashboards
+- Neural dark theme design
+
+#### Crypto Dashboard (`/crypto`)
+- Dedicated cryptocurrency analysis
+- All 8 crypto pairs
+- 40+ technical indicators
+- Candlestick pattern recognition
+- Entry/exit recommendations
+
+#### Forex Dashboard (`/forex`)
+- Dedicated forex pair analysis
+- All 6 major forex pairs
+- **Machine Learning Price Predictions** (4-model ensemble)
+- **Integrated Lot Size Calculator**
+- 40+ technical indicators
+- Enhanced risk management tools
+
+#### Standalone Lot Calculator (`/lot-calculator`)
+- Independent position sizing tool
+- Works without running analysis
+- Quick calculations for active trades
+
+### 2. Machine Learning Price Prediction (Forex Only)
+
+Advanced ML system that forecasts price direction 5 periods ahead:
+
+#### 4-Model Ensemble
+1. **Random Forest Classifier** - 100 decision trees with ensemble voting
+2. **Gradient Boosting Classifier** - Sequential tree building for error correction
+3. **XGBoost** - Optimized gradient boosting with regularization
+4. **LSTM Neural Network** - 2-layer deep learning (64→32 units) for temporal patterns
+
+#### Prediction Features
+- **Direction**: BULLISH (>0.2%), BEARISH (<-0.2%), or NEUTRAL (sideways)
+- **Confidence**: Average probability across all 4 models (70-95%)
+- **Probabilities**: Individual class probabilities for each direction
+- **Recommendation**: Trading suggestions with risk warnings
+- **Model Status**: Shows active models (3-model or 4-model ensemble)
+- **Collapsible Explanation**: Detailed breakdown of how predictions work
+
+#### 17 Features Analyzed
+- Price Momentum (5): Returns over 1, 2, 3, 5, 10 periods
+- Volatility (2): Price volatility, standard deviation
+- Volume (2): Trading volume, volume changes
+- Technical Indicators (8): RSI, Stochastic, Bollinger Bands, ADX, ATR, OBV, CCI, Williams %R, ROC, EMA trend, MACD histogram
+
+### 3. Technical Indicators (40+)
+
+The application analyzes markets using 40+ technical indicators across 5 categories:
 
 #### Momentum Indicators
 - **RSI (Relative Strength Index)** - Measures overbought/oversold conditions
@@ -139,9 +195,27 @@ The application analyzes markets using 42+ technical indicators across 5 categor
 - **Support Levels** - Price floors
 - **Resistance Levels** - Price ceilings
 
-### 2. Candlestick Pattern Recognition
+### 4. Integrated Lot Size Calculator (Forex Only)
 
-The analyzer detects 8 powerful candlestick patterns on 4-hour charts:
+Professional position sizing tool built into the forex dashboard:
+
+#### Features
+- **Account Balance Tracking** - Monitor your trading capital
+- **Risk Percentage Input** - Set risk tolerance (1-2% recommended)
+- **Stop Loss in Pips** - Auto-populated from analysis
+- **Position Size Calculations**: Standard, mini, and micro lots
+- **Profit/Loss Projections**: Based on recommended targets
+- **Risk Metrics**: Risk/reward ratio, leverage requirements, position value
+
+#### Usage
+1. Analyze a forex pair
+2. Scroll to "Lot Size Calculator" section
+3. Enter account balance and risk percentage
+4. Review recommended lot size and profit projections
+
+### 5. Candlestick Pattern Recognition
+
+The analyzer detects 8 powerful candlestick patterns on multiple timeframes (5-minute and 4-hour charts):
 
 | Pattern | Type | Strength | Signal |
 |---------|------|----------|--------|
@@ -160,9 +234,9 @@ The analyzer detects 8 powerful candlestick patterns on 4-hour charts:
 | Piercing Line | Bullish | 8/10 | Reversal |
 | Dark Cloud Cover | Bearish | 8/10 | Reversal |
 
-### 3. Dynamic Stop Loss & Take Profit
+### 6. Dynamic Stop Loss & Take Profit
 
-**Stop Loss Calculation (4 Methods):**
+**Stop Loss Calculation (Multiple Methods):**
 1. **ATR-Based** - Adapts to market volatility (2× ATR)
 2. **Support/Resistance** - Based on key structural levels
 3. **Swing Levels** - Recent swing highs/lows
@@ -173,18 +247,7 @@ The analyzer detects 8 powerful candlestick patterns on 4-hour charts:
 - **Medium Stops (5-10%):** 1:2.5 Risk/Reward
 - **Wide Stops (>10%):** 1:2 Risk/Reward
 
-### 4. Sentiment Analysis
-
-**Basic Sentiment:**
-- Analyzes market keywords and trends
-- Scores from -1 (very negative) to +1 (very positive)
-- Ready for integration with:
-  - NewsAPI
-  - Twitter API
-  - Reddit API
-  - Discord Bot API
-
-### 5. Signal Generation
+### 7. Signal Generation
 
 **Trading Signals:**
 - **STRONG BUY** - Multiple strong buy indicators (score ≥ 6)
@@ -204,15 +267,37 @@ The analyzer detects 8 powerful candlestick patterns on 4-hour charts:
 
 ### Dashboard Overview
 
-When you open http://localhost:3000, you'll see:
+#### Home Page Navigation
 
-1. **Header** - Application title and description
-2. **Analyze Button** - Click to analyze all markets
-3. **Loading Indicator** - Shows analysis progress (30-60 seconds)
-4. **Results Tabs** - Three tabs for different views:
-   - **Top Opportunities** - Best trading setups
-   - **Cryptocurrencies** - All crypto analysis
-   - **Forex Pairs** - All forex analysis
+When you open http://localhost:3000, you'll see the professional home page with:
+
+1. **Header** - Application title and feature highlights
+2. **Feature Cards** - Key features (40+ indicators, pattern recognition, etc.)
+3. **Market Selection** - Two main options:
+   - **Cryptocurrency** - Navigate to crypto dashboard
+   - **Forex** - Navigate to forex dashboard with ML predictions
+4. **Footer** - Quick links and disclaimer
+
+#### Crypto Dashboard (`/crypto`)
+
+1. **Market Selection** - Checkboxes for all 8 crypto pairs
+2. **Analyze Button** - Click to run analysis
+3. **Results Display** - Comprehensive analysis with:
+   - Price charts
+   - Technical indicators
+   - Candlestick patterns
+   - Entry/exit recommendations
+
+#### Forex Dashboard (`/forex`)
+
+1. **Market Selection** - Checkboxes for all 6 forex pairs
+2. **Analyze Button** - Click to run analysis
+3. **Results Display** - Enhanced analysis including:
+   - **ML Price Predictions** (4-model ensemble)
+   - Technical indicators
+   - Candlestick patterns
+   - Entry/exit recommendations
+   - **Integrated Lot Size Calculator**
 
 ### Running an Analysis
 
@@ -722,8 +807,8 @@ A: Run analysis at the start of each trading session. For day trading, run every
 **Q: Can I use this for day trading?**
 A: Yes, but the 4-hour candlestick patterns are better suited for swing trading (holding 1-7 days). For day trading, combine with shorter timeframe analysis.
 
-**Q: Is the sentiment analysis real-time?**
-A: Currently uses mock data. For real-time sentiment, you can integrate Twitter, Reddit, and Discord APIs (see SOCIAL_SENTIMENT_SETUP.md).
+**Q: Are ML predictions available for cryptocurrencies?**
+A: No, ML predictions are currently only available for forex pairs. Cryptocurrency analysis includes technical indicators and candlestick patterns.
 
 **Q: How accurate are the signals?**
 A: No technical analysis is 100% accurate. Signals show probability, not certainty. Always use proper risk management. Past performance doesn't guarantee future results.
@@ -916,23 +1001,41 @@ This tool is for **EDUCATIONAL AND INFORMATIONAL PURPOSES ONLY**.
 
 ## Updates & Changelog
 
-### Version 1.0.0 (Current)
-- ✅ 42+ technical indicators
+### Version 3.0.0 (Current)
+- ✅ Multi-page application architecture
+- ✅ Machine Learning Price Prediction (4-model ensemble)
+- ✅ LSTM Neural Network for temporal pattern recognition
+- ✅ Professional home page with market selection
+- ✅ Separate crypto and forex dashboards
+- ✅ Integrated lot size calculator for forex
+- ✅ Collapsible ML prediction explanations
+- ✅ 40+ technical indicators
+- ✅ 8 candlestick patterns on multiple timeframes
+- ✅ Dynamic stop loss & take profit
+- ✅ Neural dark theme UI
+- ✅ REST API
+
+### Version 2.0.0
+- ✅ 40+ technical indicators
 - ✅ 8 candlestick patterns
 - ✅ Dynamic stop loss & take profit
-- ✅ Sentiment analysis (basic)
-- ✅ Interactive web dashboard
-- ✅ REST API
+- ✅ Integrated lot size calculator
+- ✅ ATR-based stop loss calculations
+- ✅ Support/resistance level detection
+
+### Version 1.0.0
+- ✅ Basic technical analysis
+- ✅ Initial release
 
 ### Planned Features
 - 🔄 More candlestick patterns (20+ total)
-- 🔄 Real-time sentiment from social media
+- 🔄 ML predictions for cryptocurrencies
 - 🔄 Backtesting functionality
 - 🔄 Mobile app
-- 🔄 Trade automation (optional)
 - 🔄 More markets (stocks, commodities)
 - 🔄 Custom indicator builder
 - 🔄 Trading journal integration
+- 🔄 Real-time sentiment from social media
 
 ---
 
@@ -958,7 +1061,7 @@ This tool is for **EDUCATIONAL AND INFORMATIONAL PURPOSES ONLY**.
 
 ---
 
-**Document Version:** 1.0.0
-**Last Updated:** October 16, 2025
+**Document Version:** 3.0.0
+**Last Updated:** October 20, 2025
 **Author:** Manny (mannyned)
-**Repository:** https://github.com/mannyned/crypto-forex-analyzer
+**Application Version:** 3.0.0 (Multi-Page + ML Predictions)

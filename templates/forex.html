@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto & Forex Market Analyzer</title>
+    <title>Forex Market Analyzer</title>
     <!-- TradingView Lightweight Charts -->
     <script src="https://unpkg.com/lightweight-charts@4.1.0/dist/lightweight-charts.standalone.production.js"></script>
     <style>
@@ -52,6 +52,44 @@
             padding: 20px;
         }
 
+        /* Navigation */
+        .navigation {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 24px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+            background: var(--bg-hover);
+        }
+
+        .nav-link.active {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .nav-separator {
+            color: var(--border-color);
+            user-select: none;
+        }
+
         /* Header */
         header {
             background: var(--bg-secondary);
@@ -96,45 +134,8 @@
             letter-spacing: -0.01em;
         }
 
-        /* Tabs */
-        .market-type-tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 32px;
-            background: var(--bg-tertiary);
-            padding: 6px;
-            border-radius: 12px;
-        }
-
-        .market-type-tab {
-            flex: 1;
-            padding: 14px 24px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            border-radius: 8px;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .market-type-tab:hover {
-            color: var(--text-primary);
-            background: var(--bg-hover);
-        }
-
-        .market-type-tab.active {
-            background: var(--gradient-primary);
-            color: white;
-        }
-
         /* Market Selection */
         .market-selection {
-            display: none;
-        }
-
-        .market-selection.active {
             display: block;
         }
 
@@ -344,44 +345,7 @@
             letter-spacing: -0.01em;
         }
 
-        /* Results Tabs */
-        .results-tabs {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .results-tab {
-            flex: 1;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            padding: 18px 24px;
-            border-radius: 12px;
-            cursor: pointer;
-            text-align: center;
-            font-weight: 700;
-            font-size: 1.0625rem;
-            color: var(--text-secondary);
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .results-tab:hover {
-            background: var(--bg-hover);
-            border-color: var(--border-accent);
-            transform: translateY(-2px);
-        }
-
-        .results-tab.active {
-            background: var(--gradient-primary);
-            color: white;
-            border-color: transparent;
-        }
-
         .results-content {
-            display: none;
-        }
-
-        .results-content.active {
             display: block;
         }
 
@@ -844,48 +808,44 @@
             .btn {
                 width: 100%;
             }
+
+            .navigation {
+                gap: 12px;
+            }
+
+            .nav-separator {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Navigation -->
+        <nav class="navigation">
+            <a href="/" class="nav-link">Home</a>
+            <span class="nav-separator">|</span>
+            <a href="/crypto" class="nav-link">Crypto</a>
+            <span class="nav-separator">|</span>
+            <a href="/forex" class="nav-link active">Forex</a>
+            <span class="nav-separator">|</span>
+            <a href="/lot-calculator" class="nav-link">Lot Calculator</a>
+        </nav>
+
         <header>
-            <h1>Crypto & Forex Market Analyzer</h1>
-            <p class="subtitle">Professional Technical Analysis with 40+ Indicators</p>
+            <h1>Forex Market Analyzer</h1>
+            <p class="subtitle">Professional Forex Technical Analysis with 40+ Indicators & Integrated Lot Calculator</p>
         </header>
 
         <!-- Market Selection Panel -->
         <div class="selection-panel" id="selectionPanel">
-            <h2 class="section-title">Select Markets to Analyze</h2>
-
-            <div class="market-type-tabs">
-                <button class="market-type-tab active" onclick="switchMarketType('crypto')">
-                    Cryptocurrencies
-                </button>
-                <button class="market-type-tab" onclick="switchMarketType('forex')">
-                    Forex Pairs
-                </button>
-            </div>
-
-            <!-- Crypto Selection -->
-            <div id="crypto-selection" class="market-selection active">
-                <div class="select-all-section">
-                    <label class="select-all-label">
-                        <input type="checkbox" id="selectAllCrypto" onchange="toggleSelectAll('crypto')">
-                        Select All Cryptocurrencies
-                    </label>
-                    <span class="selected-count" id="cryptoCount">0 selected</span>
-                </div>
-                <div class="market-grid" id="cryptoGrid">
-                    <!-- Crypto markets will be loaded here -->
-                </div>
-            </div>
+            <h2 class="section-title">Select Forex Pairs to Analyze</h2>
 
             <!-- Forex Selection -->
             <div id="forex-selection" class="market-selection">
                 <div class="select-all-section">
                     <label class="select-all-label">
-                        <input type="checkbox" id="selectAllForex" onchange="toggleSelectAll('forex')">
+                        <input type="checkbox" id="selectAllForex" onchange="toggleSelectAll()">
                         Select All Forex Pairs
                     </label>
                     <span class="selected-count" id="forexCount">0 selected</span>
@@ -897,7 +857,7 @@
 
             <div class="analyze-section">
                 <button class="btn" id="analyzeBtn" onclick="analyzeSelected()">
-                    Analyze Selected Markets
+                    Analyze Selected Pairs
                 </button>
                 <button class="btn btn-secondary" onclick="clearSelection()">
                     Clear Selection
@@ -908,30 +868,17 @@
         <!-- Loading Indicator -->
         <div class="loading" id="loading">
             <div class="spinner"></div>
-            <p>Analyzing markets with 40+ technical indicators...</p>
+            <p>Analyzing forex pairs with 40+ technical indicators...</p>
             <p id="loadingProgress">Preparing analysis...</p>
         </div>
 
         <!-- Results Section -->
         <div class="results-section" id="resultsSection">
             <div class="results-header">
-                <h2 class="results-title">Analysis Results</h2>
+                <h2 class="results-title">Forex Analysis Results</h2>
                 <button class="btn" onclick="backToSelection()">
-                    Analyze More Markets
+                    Analyze More Pairs
                 </button>
-            </div>
-
-            <div class="results-tabs">
-                <div class="results-tab active" onclick="switchResultsTab('crypto')">
-                    Cryptocurrencies
-                </div>
-                <div class="results-tab" onclick="switchResultsTab('forex')">
-                    Forex Pairs
-                </div>
-            </div>
-
-            <div id="crypto-results" class="results-content active">
-                <div class="market-cards-grid" id="cryptoResultsGrid"></div>
             </div>
 
             <div id="forex-results" class="results-content">
@@ -941,15 +888,13 @@
 
         <div class="disclaimer">
             <strong>DISCLAIMER:</strong>
-            <p>This tool is for educational and informational purposes only. It does NOT constitute financial advice. Trading cryptocurrencies and forex carries substantial risk of loss. Always do your own research and consult with licensed financial advisors before making investment decisions.</p>
+            <p>This tool is for educational and informational purposes only. It does NOT constitute financial advice. Trading forex carries substantial risk of loss. Always do your own research and consult with licensed financial advisors before making investment decisions.</p>
         </div>
     </div>
 
     <script>
-        let availableMarkets = { crypto: [], forex: [] };
-        let selectedMarkets = { crypto: new Set(), forex: new Set() };
-        let currentMarketType = 'crypto';
-        let currentResultsTab = 'crypto';
+        let availableMarkets = [];
+        let selectedMarkets = new Set();
 
         // Load available markets on page load
         window.addEventListener('DOMContentLoaded', loadMarkets);
@@ -960,27 +905,27 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    availableMarkets = data.data;
-                    renderMarketGrid('crypto');
-                    renderMarketGrid('forex');
+                    // Only load forex markets
+                    availableMarkets = data.data.forex || [];
+                    renderMarketGrid();
                 }
             } catch (error) {
                 console.error('Error loading markets:', error);
             }
         }
 
-        function renderMarketGrid(type) {
-            const grid = document.getElementById(`${type}Grid`);
+        function renderMarketGrid() {
+            const grid = document.getElementById('forexGrid');
             grid.innerHTML = '';
 
-            availableMarkets[type].forEach(market => {
+            availableMarkets.forEach(market => {
                 const div = document.createElement('div');
                 div.className = 'market-checkbox';
-                div.id = `market-${type}-${market.symbol.replace(/[^a-zA-Z0-9]/g, '')}`;
+                div.id = `market-forex-${market.symbol.replace(/[^a-zA-Z0-9]/g, '')}`;
 
                 div.innerHTML = `
                     <label>
-                        <input type="checkbox" value="${market.symbol}" onchange="toggleMarket('${type}', '${market.symbol}')">
+                        <input type="checkbox" value="${market.symbol}" onchange="toggleMarket('${market.symbol}')">
                         <div class="market-info">
                             <div class="market-name">${market.name}</div>
                             <div class="market-symbol">${market.symbol}</div>
@@ -992,94 +937,76 @@
             });
         }
 
-        function switchMarketType(type) {
-            currentMarketType = type;
-
-            // Update tabs
-            document.querySelectorAll('.market-type-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            // Update content
-            document.querySelectorAll('.market-selection').forEach(selection => {
-                selection.classList.remove('active');
-            });
-            document.getElementById(`${type}-selection`).classList.add('active');
-        }
-
-        function toggleMarket(type, symbol) {
-            if (selectedMarkets[type].has(symbol)) {
-                selectedMarkets[type].delete(symbol);
+        function toggleMarket(symbol) {
+            if (selectedMarkets.has(symbol)) {
+                selectedMarkets.delete(symbol);
             } else {
-                selectedMarkets[type].add(symbol);
+                selectedMarkets.add(symbol);
             }
 
-            updateSelectedCount(type);
-            updateMarketCardStyle(type, symbol);
-            updateSelectAllCheckbox(type);
+            updateSelectedCount();
+            updateMarketCardStyle(symbol);
+            updateSelectAllCheckbox();
         }
 
-        function updateMarketCardStyle(type, symbol) {
-            const card = document.getElementById(`market-${type}-${symbol.replace(/[^a-zA-Z0-9]/g, '')}`);
-            if (selectedMarkets[type].has(symbol)) {
+        function updateMarketCardStyle(symbol) {
+            const card = document.getElementById(`market-forex-${symbol.replace(/[^a-zA-Z0-9]/g, '')}`);
+            if (selectedMarkets.has(symbol)) {
                 card.classList.add('selected');
             } else {
                 card.classList.remove('selected');
             }
         }
 
-        function toggleSelectAll(type) {
-            const checkbox = document.getElementById(`selectAll${type.charAt(0).toUpperCase() + type.slice(1)}`);
-            const checkboxes = document.querySelectorAll(`#${type}Grid input[type="checkbox"]`);
+        function toggleSelectAll() {
+            const checkbox = document.getElementById('selectAllForex');
+            const checkboxes = document.querySelectorAll('#forexGrid input[type="checkbox"]');
 
             checkboxes.forEach(cb => {
                 cb.checked = checkbox.checked;
                 const symbol = cb.value;
 
                 if (checkbox.checked) {
-                    selectedMarkets[type].add(symbol);
+                    selectedMarkets.add(symbol);
                 } else {
-                    selectedMarkets[type].delete(symbol);
+                    selectedMarkets.delete(symbol);
                 }
-                updateMarketCardStyle(type, symbol);
+                updateMarketCardStyle(symbol);
             });
 
-            updateSelectedCount(type);
+            updateSelectedCount();
         }
 
-        function updateSelectAllCheckbox(type) {
-            const selectAllCheckbox = document.getElementById(`selectAll${type.charAt(0).toUpperCase() + type.slice(1)}`);
-            const totalMarkets = availableMarkets[type].length;
-            const selectedCount = selectedMarkets[type].size;
+        function updateSelectAllCheckbox() {
+            const selectAllCheckbox = document.getElementById('selectAllForex');
+            const totalMarkets = availableMarkets.length;
+            const selectedCount = selectedMarkets.size;
 
             selectAllCheckbox.checked = selectedCount === totalMarkets && totalMarkets > 0;
         }
 
-        function updateSelectedCount(type) {
-            const count = selectedMarkets[type].size;
-            document.getElementById(`${type}Count`).textContent = `${count} selected`;
+        function updateSelectedCount() {
+            const count = selectedMarkets.size;
+            document.getElementById('forexCount').textContent = `${count} selected`;
         }
 
         function clearSelection() {
-            ['crypto', 'forex'].forEach(type => {
-                selectedMarkets[type].clear();
-                document.querySelectorAll(`#${type}Grid input[type="checkbox"]`).forEach(cb => {
-                    cb.checked = false;
-                });
-                document.querySelectorAll(`#${type}Grid .market-checkbox`).forEach(card => {
-                    card.classList.remove('selected');
-                });
-                updateSelectedCount(type);
-                updateSelectAllCheckbox(type);
+            selectedMarkets.clear();
+            document.querySelectorAll('#forexGrid input[type="checkbox"]').forEach(cb => {
+                cb.checked = false;
             });
+            document.querySelectorAll('#forexGrid .market-checkbox').forEach(card => {
+                card.classList.remove('selected');
+            });
+            updateSelectedCount();
+            updateSelectAllCheckbox();
         }
 
         async function analyzeSelected() {
-            const totalSelected = selectedMarkets.crypto.size + selectedMarkets.forex.size;
+            const totalSelected = selectedMarkets.size;
 
             if (totalSelected === 0) {
-                alert('Please select at least one market to analyze');
+                alert('Please select at least one forex pair to analyze');
                 return;
             }
 
@@ -1095,12 +1022,12 @@
 
             try {
                 const requestData = {
-                    crypto: Array.from(selectedMarkets.crypto),
-                    forex: Array.from(selectedMarkets.forex)
+                    crypto: [],
+                    forex: Array.from(selectedMarkets)
                 };
 
                 document.getElementById('loadingProgress').textContent =
-                    `Analyzing ${totalSelected} market${totalSelected > 1 ? 's' : ''}...`;
+                    `Analyzing ${totalSelected} forex pair${totalSelected > 1 ? 's' : ''}...`;
 
                 const response = await fetch('/api/analyze', {
                     method: 'POST',
@@ -1113,7 +1040,7 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    displayResults(data.data);
+                    displayResults(data.data.forex || []);
                     resultsSection.classList.add('active');
                 } else {
                     alert('Error: ' + data.error);
@@ -1128,13 +1055,8 @@
             }
         }
 
-        function displayResults(data) {
-            displayMarketResults(data.crypto, 'cryptoResultsGrid');
-            displayMarketResults(data.forex, 'forexResultsGrid');
-        }
-
-        function displayMarketResults(markets, gridId) {
-            const grid = document.getElementById(gridId);
+        function displayResults(markets) {
+            const grid = document.getElementById('forexResultsGrid');
             grid.innerHTML = '';
 
             if (!markets || markets.length === 0) {
@@ -1431,44 +1353,41 @@
                 `;
             }
 
-            // Generate lot calculator HTML for forex pairs
+            // Generate lot calculator HTML - ALL forex pairs get this
             let lotCalculatorHTML = '';
-            const isForexPair = market.symbol && market.symbol.includes('=X');
-            if (isForexPair) {
-                // Calculate default stop loss in pips from entry/exit data
-                let defaultStopLossPips = 50; // Default value
-                let takeProfitPips = 100; // Default 2:1 ratio
-                let entryPrice = 0;
-                let stopLossPrice = 0;
-                let takeProfitPrice = 0;
+            // Calculate default stop loss in pips from entry/exit data
+            let defaultStopLossPips = 50; // Default value
+            let takeProfitPips = 100; // Default 2:1 ratio
+            let entryPrice = 0;
+            let stopLossPrice = 0;
+            let takeProfitPrice = 0;
 
-                if (market.entry_exit && market.entry_exit.entry_price && market.entry_exit.stop_loss) {
-                    const pipSize = market.symbol.includes('JPY') ? 0.01 : 0.0001;
-                    defaultStopLossPips = Math.round(Math.abs(market.entry_exit.entry_price - market.entry_exit.stop_loss) / pipSize);
-                    entryPrice = market.entry_exit.entry_price;
-                    stopLossPrice = market.entry_exit.stop_loss;
+            if (market.entry_exit && market.entry_exit.entry_price && market.entry_exit.stop_loss) {
+                const pipSize = market.symbol.includes('JPY') ? 0.01 : 0.0001;
+                defaultStopLossPips = Math.round(Math.abs(market.entry_exit.entry_price - market.entry_exit.stop_loss) / pipSize);
+                entryPrice = market.entry_exit.entry_price;
+                stopLossPrice = market.entry_exit.stop_loss;
 
-                    // Calculate take profit pips if available
-                    if (market.entry_exit.take_profit) {
-                        takeProfitPips = Math.round(Math.abs(market.entry_exit.take_profit - market.entry_exit.entry_price) / pipSize);
-                        takeProfitPrice = market.entry_exit.take_profit;
-                    }
+                // Calculate take profit pips if available
+                if (market.entry_exit.take_profit) {
+                    takeProfitPips = Math.round(Math.abs(market.entry_exit.take_profit - market.entry_exit.entry_price) / pipSize);
+                    takeProfitPrice = market.entry_exit.take_profit;
                 }
-
-                const lotCalcId = `lot-calc-${chartCounter}`;
-                lotCalculatorHTML = `
-                    <div class="entry-exit" style="border-color: rgba(59, 130, 246, 0.3);">
-                        <div class="entry-exit-title" style="color: var(--accent-primary);">📊 Lot Size Calculator</div>
-                        <form class="lot-calc-form" id="form-${lotCalcId}" onsubmit="calculateLotSize(event, '${market.symbol}', '${lotCalcId}', ${defaultStopLossPips}, ${takeProfitPips})">
-                            <input type="number" name="accountBalance" placeholder="Account Balance (USD)" value="10000" min="1" step="0.01" required>
-                            <input type="number" name="riskPercent" placeholder="Risk %" value="1" min="0.1" max="100" step="0.1" required>
-                            <input type="number" name="stopLossPips" placeholder="Stop Loss (Pips)" value="${defaultStopLossPips}" min="1" step="1" required>
-                            <button type="submit">Calculate Lot Size</button>
-                        </form>
-                        <div class="lot-calc-results" id="results-${lotCalcId}" style="display:none;"></div>
-                    </div>
-                `;
             }
+
+            const lotCalcId = `lot-calc-${chartCounter}`;
+            lotCalculatorHTML = `
+                <div class="entry-exit" style="border-color: rgba(59, 130, 246, 0.3);">
+                    <div class="entry-exit-title" style="color: var(--accent-primary);">📊 Lot Size Calculator</div>
+                    <form class="lot-calc-form" id="form-${lotCalcId}" onsubmit="calculateLotSize(event, '${market.symbol}', '${lotCalcId}', ${defaultStopLossPips}, ${takeProfitPips})">
+                        <input type="number" name="accountBalance" placeholder="Account Balance (USD)" value="10000" min="1" step="0.01" required>
+                        <input type="number" name="riskPercent" placeholder="Risk %" value="1" min="0.1" max="100" step="0.1" required>
+                        <input type="number" name="stopLossPips" placeholder="Stop Loss (Pips)" value="${defaultStopLossPips}" min="1" step="1" required>
+                        <button type="submit">Calculate Lot Size</button>
+                    </form>
+                    <div class="lot-calc-results" id="results-${lotCalcId}" style="display:none;"></div>
+                </div>
+            `;
 
             card.innerHTML = `
                 <div class="market-header">
@@ -1648,22 +1567,6 @@
                 console.error('Error rendering chart:', error);
                 container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 40px;">Chart unavailable</div>';
             }
-        }
-
-        function switchResultsTab(tab) {
-            currentResultsTab = tab;
-
-            // Update tab buttons
-            document.querySelectorAll('.results-tab').forEach(t => {
-                t.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            // Update content
-            document.querySelectorAll('.results-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            document.getElementById(`${tab}-results`).classList.add('active');
         }
 
         function backToSelection() {

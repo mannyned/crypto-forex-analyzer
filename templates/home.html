@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto & Forex Market Analyzer - Home</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0d0d0d;
+            --bg-secondary: #171717;
+            --bg-tertiary: #1f1f1f;
+            --bg-card: #232323;
+            --bg-hover: #2a2a2a;
+            --border-color: #2d2d2d;
+            --border-accent: #3a3a3a;
+
+            --text-primary: #e8e8e8;
+            --text-secondary: #b0b0b0;
+            --text-muted: #707070;
+
+            --accent-primary: #00d4ff;
+            --accent-secondary: #7c3aed;
+            --accent-success: #00ff88;
+            --accent-danger: #ff3366;
+            --accent-warning: #ffaa00;
+
+            --gradient-primary: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
+            --gradient-success: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            --gradient-danger: linear-gradient(135deg, #ff3366 0%, #cc0033 100%);
+            --gradient-crypto: linear-gradient(135deg, #00d4ff 0%, #00ff88 100%);
+            --gradient-forex: linear-gradient(135deg, #ff3366 0%, #ffaa00 100%);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+
+        /* Header */
+        header {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 50px 30px;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .description {
+            font-size: 1rem;
+            color: var(--text-muted);
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 212, 255, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-size: 1.375rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .feature-description {
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Market Cards */
+        .markets-section {
+            margin-top: 40px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        .markets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .market-card {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .market-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .market-card.crypto::before {
+            background: var(--gradient-crypto);
+        }
+
+        .market-card.forex::before {
+            background: var(--gradient-forex);
+        }
+
+        .market-card:hover {
+            transform: translateY(-6px);
+            border-color: transparent;
+        }
+
+        .market-card.crypto:hover {
+            box-shadow: 0 16px 32px rgba(0, 212, 255, 0.2);
+        }
+
+        .market-card.forex:hover {
+            box-shadow: 0 16px 32px rgba(255, 51, 102, 0.2);
+        }
+
+        .market-card:hover::before {
+            opacity: 1;
+        }
+
+        .market-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .market-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .market-card.crypto .market-title {
+            background: var(--gradient-crypto);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .market-card.forex .market-title {
+            background: var(--gradient-forex);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .market-description {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .market-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .market-card.crypto .stat-value {
+            color: var(--accent-primary);
+        }
+
+        .market-card.forex .stat-value {
+            color: var(--accent-danger);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 16px 40px;
+            font-size: 1.125rem;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-crypto {
+            background: var(--gradient-crypto);
+            color: #0d0d0d;
+        }
+
+        .btn-crypto:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn-forex {
+            background: var(--gradient-forex);
+            color: #ffffff;
+        }
+
+        .btn-forex:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(255, 51, 102, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-accent);
+            padding: 12px 30px;
+            font-size: 1rem;
+            margin-left: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-hover);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 30px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .footer-links {
+            margin-bottom: 15px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin: 0 15px;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-primary);
+        }
+
+        .disclaimer {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            max-width: 800px;
+            margin: 15px auto 0;
+            line-height: 1.6;
+        }
+
+        .disclaimer strong {
+            color: var(--accent-warning);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .markets-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .market-icon {
+                font-size: 4rem;
+            }
+
+            .market-title {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Crypto & Forex Market Analyzer</h1>
+            <p class="subtitle">Professional Technical Analysis & Trading Tools</p>
+            <p class="description">
+                Advanced market analysis with 40+ technical indicators, candlestick pattern recognition,
+                and professional risk management tools for cryptocurrency and forex trading.
+            </p>
+        </header>
+
+        <section class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3 class="feature-title">40+ Technical Indicators</h3>
+                <p class="feature-description">
+                    RSI, MACD, Bollinger Bands, SMA, EMA, Stochastic, ADX, and more for comprehensive market analysis.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🕯️</div>
+                <h3 class="feature-title">Pattern Recognition</h3>
+                <p class="feature-description">
+                    Detect 8 major candlestick patterns including Engulfing, Doji, Hammer, Morning/Evening Star, and more.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3 class="feature-title">Entry/Exit Signals</h3>
+                <p class="feature-description">
+                    Smart entry/exit recommendations with stop loss and take profit targets based on ATR and support/resistance.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💼</div>
+                <h3 class="feature-title">Lot Size Calculator</h3>
+                <p class="feature-description">
+                    Professional position sizing for forex trades with risk management and profit/loss projections.
+                </p>
+            </div>
+        </section>
+
+        <section class="markets-section">
+            <h2 class="section-title">Choose Your Market</h2>
+
+            <div class="markets-grid">
+                <div class="market-card crypto">
+                    <div class="market-icon">₿</div>
+                    <h2 class="market-title">Cryptocurrency</h2>
+                    <p class="market-description">
+                        Analyze Bitcoin, Ethereum, and 6 other major cryptocurrencies with real-time data and advanced technical indicators.
+                    </p>
+                    <div class="market-stats">
+                        <div class="stat">
+                            <div class="stat-value">8</div>
+                            <div class="stat-label">Crypto Pairs</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">40+</div>
+                            <div class="stat-label">Indicators</div>
+                        </div>
+                    </div>
+                    <a href="/crypto" class="btn btn-crypto">Analyze Crypto Markets</a>
+                </div>
+
+                <div class="market-card forex">
+                    <div class="market-icon">💱</div>
+                    <h2 class="market-title">Forex</h2>
+                    <p class="market-description">
+                        Trade major currency pairs with integrated lot size calculator and professional risk management tools.
+                    </p>
+                    <div class="market-stats">
+                        <div class="stat">
+                            <div class="stat-value">6</div>
+                            <div class="stat-label">Major Pairs</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">✓</div>
+                            <div class="stat-label">Lot Calculator</div>
+                        </div>
+                    </div>
+                    <a href="/forex" class="btn btn-forex">Analyze Forex Markets</a>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="/lot-calculator" class="btn btn-secondary">Standalone Lot Calculator</a>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/crypto">Crypto</a>
+            <a href="/forex">Forex</a>
+            <a href="/lot-calculator">Lot Calculator</a>
+        </div>
+        <p class="disclaimer">
+            <strong>DISCLAIMER:</strong> This tool is for educational and informational purposes only.
+            It does NOT constitute financial advice. Trading cryptocurrencies and forex carries substantial
+            risk of loss. Always do your own research and consult with licensed financial advisors before
+            making investment decisions. Never invest more than you can afford to lose.
+        </p>
+    </footer>
+</body>
+</html>

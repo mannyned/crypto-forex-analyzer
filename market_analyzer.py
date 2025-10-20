@@ -5,6 +5,7 @@ from data_fetcher import DataFetcher
 from technical_indicators import calculate_all_indicators
 from sentiment_analyzer import SentimentAnalyzer
 from candle_analysis import CandlePatternAnalyzer, EntryExitCalculator
+from forex_prediction import ForexPredictor
 
 
 class MarketAnalyzer:
@@ -13,6 +14,7 @@ class MarketAnalyzer:
         self.sentiment_analyzer = SentimentAnalyzer()
         self.candle_analyzer = CandlePatternAnalyzer()
         self.entry_exit_calculator = EntryExitCalculator()  # Now uses dynamic analysis
+        self.forex_predictor = ForexPredictor()  # ML prediction model for forex
 
     def generate_signal(self, indicators, sentiment_score=0):
         """
@@ -422,6 +424,15 @@ class MarketAnalyzer:
                         'volume': float(row['volume']) if 'volume' in row else 0
                     })
 
+            # Generate ML prediction for forex pairs
+            ml_prediction = None
+            if market_type == 'forex':
+                try:
+                    ml_prediction = self.forex_predictor.predict(df, indicators)
+                except Exception as e:
+                    print(f"Error generating forex prediction for {symbol}: {e}")
+                    ml_prediction = None
+
             return {
                 'symbol': symbol,
                 'market_type': market_type,
@@ -438,6 +449,7 @@ class MarketAnalyzer:
                 'candle_patterns_5m': candle_patterns_5m,
                 'entry_exit_5m': entry_exit_data_5m,
                 'chart_data': chart_data,  # Add chart data for visualization
+                'ml_prediction': ml_prediction,  # Add ML prediction for forex
                 # Keep old keys for backward compatibility
                 'candle_patterns': candle_patterns_4h,
                 'entry_exit': entry_exit_data_4h

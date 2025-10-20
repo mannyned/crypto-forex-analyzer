@@ -20,9 +20,27 @@ lot_calculator = LotCalculator()
 
 
 @app.route('/')
+def home():
+    """Render the home page"""
+    return render_template('home.html')
+
+
+@app.route('/index')
 def index():
-    """Render the main dashboard"""
+    """Render the combined dashboard (legacy route)"""
     return render_template('index.html')
+
+
+@app.route('/crypto')
+def crypto():
+    """Render the cryptocurrency analysis page"""
+    return render_template('crypto.html')
+
+
+@app.route('/forex')
+def forex():
+    """Render the forex analysis page"""
+    return render_template('forex.html')
 
 
 @app.route('/lot-calculator')
