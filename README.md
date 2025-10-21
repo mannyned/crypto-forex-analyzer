@@ -283,9 +283,121 @@ The analyzer includes professional risk management features:
 
 This project is for educational purposes. Use at your own risk.
 
+## Historical Testing & Backtesting
+
+The analyzer includes comprehensive tools for validating performance on historical data:
+
+### Testing Modules
+
+1. **Historical Tester** (`historical_tester.py`)
+   - Tests signal and ML prediction accuracy on historical data
+   - Analyzes multiple points over extended periods
+   - Generates detailed accuracy reports
+   - Calculates precision, recall, F1-scores for signals
+
+2. **Backtester** (`backtester.py`)
+   - Simulates actual trading with realistic entry/exit points
+   - Supports both LONG and SHORT positions
+   - Risk-based position sizing (1% risk per trade)
+   - Stop loss and take profit execution
+   - Comprehensive performance metrics:
+     - Total return, win rate, profit factor
+     - Sharpe ratio, max drawdown
+     - Average win/loss amounts
+     - Longest winning/losing streaks
+
+3. **Report Generator** (`report_generator.py`)
+   - Creates professional HTML reports
+   - Visual charts and performance summaries
+   - Trade-by-trade breakdowns
+
+### Test Scripts
+
+- `test_usdjpy_today.py` - Real-time USD/JPY analysis
+- `test_usdjpy_intraday.py` - Intraday performance testing (hourly)
+- `test_major_events.py` - Major forex event testing (Flash crashes, Brexit, COVID-19)
+- `test_major_events_weekly.py` - Weekly interval testing
+- `run_major_events.py` - Automated test runner
+
+### Entry Conditions
+
+The backtester uses adaptive thresholds based on timeframe:
+
+**Daily Intervals (1d):**
+- Signal strength: ≥20%
+- ML confidence: ≥55%
+- Candlestick patterns: Optional
+- Scoring: Need 2 of 3 conditions
+
+**Weekly Intervals (1wk):**
+- Signal strength: ≥15%
+- ML confidence: ≥50%
+- Candlestick patterns: Optional
+- Scoring: Need 2 of 3 conditions
+
+**Intraday Intervals (1h, 5m):**
+- Signal strength: ≥50%
+- ML confidence: ≥75%
+- Candlestick patterns: Required
+- Scoring: All 3 conditions needed
+
+### Historical Test Results
+
+**Major Forex Events (Daily Intervals):**
+
+| Event | Period | Symbol | Trades | Return | Win Rate | Signal Accuracy |
+|-------|--------|--------|--------|--------|----------|-----------------|
+| Swiss Franc 2015 | Oct 2014 - Apr 2015 | EUR/CHF | 1 | +0.18% | 100% | 66.67% |
+| Brexit 2016 | Mar - Sep 2016 | GBP/USD | 1 | +0.17% | 100% | 62.50% |
+| COVID-19 2020 | Jan - Jul 2020 | EUR/USD | 0 | 0% | N/A | 58.33% |
+
+**USD/JPY Intraday Test (Oct 20, 2025):**
+- Period: 12 AM - 5 PM CST (1-hour intervals)
+- Market movement: -0.05% (BEARISH)
+- Signal accuracy: 66.67%
+- ML accuracy: 0% (predicted NEUTRAL)
+- Test points: 6
+
+### Usage Guide
+
+See `TESTING_GUIDE.md` for complete instructions on:
+- Running historical tests
+- Interpreting backtest results
+- Creating custom test scenarios
+- Understanding performance metrics
+
+### Important Notes
+
+**Current Limitations:**
+- Analyzer uses current market data for each test point, not historical data at that specific time
+- Backtest results are approximate and may not reflect true historical performance
+- For accurate backtesting, the analyzer would need historical data replay capability
+- Results are best used for position sizing validation and risk management testing
+
+**Recommendations:**
+- Use backtests to validate risk management logic
+- Test stop loss/take profit mechanics
+- Understand risk/reward ratios
+- Focus on live/paper trading for strategy validation
+- Do not rely solely on backtest performance for trading decisions
+
+See `WEEKLY_TESTING_SUMMARY.md` and `FLASH_CRASH_TEST_RESULTS_UPDATED.md` for detailed analysis.
+
 ## Version History
 
-### v3.0.0 (Current)
+### v3.1.0 (Current)
+- **Historical Testing Framework** - Comprehensive backtesting and validation tools
+- **Historical Tester** - Signal and ML accuracy testing on historical data
+- **Backtester** - Trading simulation with realistic entry/exit points
+- **SHORT Position Support** - Profit from bearish markets
+- **Adaptive Entry Conditions** - Interval-specific thresholds (daily, weekly, intraday)
+- **Flash Crash Testing** - Validated on major forex events (Swiss Franc 2015, Brexit 2016, COVID-19 2020)
+- **Intraday Testing** - Hourly performance analysis
+- **Performance Metrics** - Win rate, profit factor, Sharpe ratio, max drawdown
+- **Test Scripts** - Real-time and historical testing modules
+- **Documentation** - Comprehensive testing guides and results summaries
+
+### v3.0.0
 - **Multi-page architecture** with separate crypto and forex dashboards
 - **Machine Learning Price Prediction** (4-model ensemble: RF, GB, XGB, LSTM)
 - **Professional home page** with market selection

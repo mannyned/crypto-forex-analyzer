@@ -1,0 +1,22 @@
+{
+  "metrics": {
+    "error": "No trades executed",
+    "initial_capital": 10000,
+    "final_capital": 10000,
+    "total_return": 0.0,
+    "total_trades": 0,
+    "winning_trades": 0,
+    "losing_trades": 0,
+    "win_rate": 0.0,
+    "total_profit": 0.0,
+    "total_loss": 0.0,
+    "avg_win": 0.0,
+    "avg_loss": 0.0,
+    "profit_factor": null,
+    "sharpe_ratio": 0.0,
+    "max_drawdown": 0.0,
+    "by_exit_reason": {}
+  },
+  "trades": [],
+  "timestamp": "2025-10-20 17:26:24"
+}

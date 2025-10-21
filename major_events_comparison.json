@@ -1,0 +1,259 @@
+{
+  "swiss_franc_2015": {
+    "test": {
+      "summary": {
+        "total_tests": 5,
+        "date_range": "2015-02-18 to 2015-04-15",
+        "markets_tested": 1
+      },
+      "signal_accuracy": {
+        "overall": {
+          "correct": 3,
+          "total": 5,
+          "accuracy": 60.0
+        },
+        "SELL": {
+          "correct": 3,
+          "total": 5,
+          "accuracy": 60.0
+        }
+      },
+      "ml_accuracy": {
+        "overall": {
+          "correct": 1,
+          "total": 5,
+          "accuracy": 20.0
+        },
+        "BULLISH": {
+          "correct": 1,
+          "total": 5,
+          "accuracy": 20.0
+        }
+      },
+      "by_market_type": {
+        "forex": {
+          "signal_accuracy": 60.0,
+          "total_tests": 5,
+          "avg_return": -0.4637109936108671
+        }
+      },
+      "by_symbol": {
+        "EURCHF=X": {
+          "signal_accuracy": 60.0,
+          "total_tests": 5,
+          "avg_return": -0.4637109936108671,
+          "ml_accuracy": 20.0
+        }
+      }
+    },
+    "backtest": {
+      "initial_capital": 10000,
+      "final_capital": 10017.730933582554,
+      "total_return": 0.17730933582553915,
+      "total_trades": 1,
+      "winning_trades": 1,
+      "losing_trades": 0,
+      "win_rate": 100.0,
+      "total_profit": 17.730933582553682,
+      "total_loss": 0.0,
+      "avg_win": 17.730933582553682,
+      "avg_loss": 0.0,
+      "profit_factor": null,
+      "sharpe_ratio": 0.0,
+      "max_drawdown": 0.0,
+      "by_exit_reason": {
+        "END_OF_PERIOD": {
+          "count": 1,
+          "avg_pnl": 17.730933582553682
+        }
+      }
+    },
+    "trades": [
+      {
+        "symbol": "EURCHF=X",
+        "market_type": "forex",
+        "entry_date": "2015-02-18",
+        "entry_price": 1.0676300525665283,
+        "stop_loss": 1.0996589541435242,
+        "take_profit": 1.0035722494125365,
+        "direction": "SHORT",
+        "signal": "SELL",
+        "signal_strength": 26.67,
+        "ml_prediction": "BULLISH",
+        "ml_confidence": 71.00277503152802,
+        "position_size": 1000.0,
+        "risk_amount": 100.0,
+        "capital_at_entry": 10000,
+        "score": 2,
+        "exit_date": "2015-04-29",
+        "exit_price": 1.048699975013733,
+        "exit_reason": "END_OF_PERIOD",
+        "pnl": 17.730933582553682,
+        "pnl_percent": 0.17699550626893032,
+        "final_capital": 10017.730933582554
+      }
+    ]
+  },
+  "brexit_2016": {
+    "test": {
+      "summary": {
+        "total_tests": 5,
+        "date_range": "2016-07-19 to 2016-09-13",
+        "markets_tested": 1
+      },
+      "signal_accuracy": {
+        "overall": {
+          "correct": 3,
+          "total": 5,
+          "accuracy": 60.0
+        },
+        "STRONG SELL": {
+          "correct": 3,
+          "total": 5,
+          "accuracy": 60.0
+        }
+      },
+      "ml_accuracy": {
+        "overall": {
+          "correct": 2,
+          "total": 5,
+          "accuracy": 40.0
+        },
+        "BULLISH": {
+          "correct": 2,
+          "total": 5,
+          "accuracy": 40.0
+        }
+      },
+      "by_market_type": {
+        "forex": {
+          "signal_accuracy": 60.0,
+          "total_tests": 5,
+          "avg_return": -0.2073181443396166
+        }
+      },
+      "by_symbol": {
+        "GBPUSD=X": {
+          "signal_accuracy": 60.0,
+          "total_tests": 5,
+          "avg_return": -0.2073181443396166,
+          "ml_accuracy": 40.0
+        }
+      }
+    },
+    "backtest": {
+      "initial_capital": 10000,
+      "final_capital": 10017.290328655048,
+      "total_return": 0.17290328655048143,
+      "total_trades": 1,
+      "winning_trades": 1,
+      "losing_trades": 0,
+      "win_rate": 100.0,
+      "total_profit": 17.290328655048622,
+      "total_loss": 0.0,
+      "avg_win": 17.290328655048622,
+      "avg_loss": 0.0,
+      "profit_factor": null,
+      "sharpe_ratio": 0.0,
+      "max_drawdown": 0.0,
+      "by_exit_reason": {
+        "END_OF_PERIOD": {
+          "count": 1,
+          "avg_pnl": 17.290328655048622
+        }
+      }
+    },
+    "trades": [
+      {
+        "symbol": "GBPUSD=X",
+        "market_type": "forex",
+        "entry_date": "2016-07-19",
+        "entry_price": 1.3268934488296509,
+        "stop_loss": 1.3667002522945404,
+        "take_profit": 1.2472798418998718,
+        "direction": "SHORT",
+        "signal": "STRONG SELL",
+        "signal_strength": 40.0,
+        "ml_prediction": "BULLISH",
+        "ml_confidence": 62.762356386129895,
+        "position_size": 1000.0,
+        "risk_amount": 100.0,
+        "capital_at_entry": 10000,
+        "score": 2,
+        "exit_date": "2016-09-29",
+        "exit_price": 1.3039510250091553,
+        "exit_reason": "END_OF_PERIOD",
+        "pnl": 17.290328655048622,
+        "pnl_percent": 0.17260484709710988,
+        "final_capital": 10017.290328655048
+      }
+    ]
+  },
+  "covid_2020": {
+    "test": {
+      "summary": {
+        "total_tests": 5,
+        "date_range": "2020-05-20 to 2020-07-15",
+        "markets_tested": 1
+      },
+      "signal_accuracy": {
+        "overall": {
+          "correct": 0,
+          "total": 5,
+          "accuracy": 0.0
+        },
+        "SELL": {
+          "correct": 0,
+          "total": 5,
+          "accuracy": 0.0
+        }
+      },
+      "ml_accuracy": {
+        "overall": {
+          "correct": 5,
+          "total": 5,
+          "accuracy": 100.0
+        },
+        "BULLISH": {
+          "correct": 5,
+          "total": 5,
+          "accuracy": 100.0
+        }
+      },
+      "by_market_type": {
+        "forex": {
+          "signal_accuracy": 0.0,
+          "total_tests": 5,
+          "avg_return": 0.7229016213080366
+        }
+      },
+      "by_symbol": {
+        "EURUSD=X": {
+          "signal_accuracy": 0.0,
+          "total_tests": 5,
+          "avg_return": 0.7229016213080366,
+          "ml_accuracy": 100.0
+        }
+      }
+    },
+    "backtest": {
+      "error": "No trades executed",
+      "initial_capital": 10000,
+      "final_capital": 10000,
+      "total_return": 0.0,
+      "total_trades": 0,
+      "winning_trades": 0,
+      "losing_trades": 0,
+      "win_rate": 0.0,
+      "total_profit": 0.0,
+      "total_loss": 0.0,
+      "avg_win": 0.0,
+      "avg_loss": 0.0,
+      "profit_factor": null,
+      "sharpe_ratio": 0.0,
+      "max_drawdown": 0.0,
+      "by_exit_reason": {}
+    },
+    "trades": []
+  }
+}

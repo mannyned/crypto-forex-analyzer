@@ -1,0 +1,81 @@
+{
+  "test_date": "2025-10-20",
+  "period": "12 AM CST to 5 PM CST",
+  "symbol": "USDJPY=X",
+  "price_stats": {
+    "open": 150.822998046875,
+    "close": 150.7429962158203,
+    "high": 150.96499633789062,
+    "low": 150.26600646972656,
+    "change": -0.0800018310546875,
+    "change_pct": -0.053043522599798304,
+    "direction": "BEARISH (DOWN)"
+  },
+  "test_points": [
+    {
+      "time": "2025-10-19 23:00:00+00:00",
+      "price": 150.91700744628906,
+      "signal": "SELL",
+      "strength": 13.33,
+      "ml_direction": "NEUTRAL",
+      "ml_confidence": 70.13486945154257,
+      "actual_4h_move": -0.13053944609659152,
+      "prediction_correct": true
+    },
+    {
+      "time": "2025-10-20 08:00:00+00:00",
+      "price": 150.57899475097656,
+      "signal": "SELL",
+      "strength": 13.33,
+      "ml_direction": "NEUTRAL",
+      "ml_confidence": 70.13486945154257,
+      "actual_4h_move": 0.059108188860442154,
+      "prediction_correct": false
+    },
+    {
+      "time": "2025-10-20 11:00:00+00:00",
+      "price": 150.6959991455078,
+      "signal": "SELL",
+      "strength": 13.33,
+      "ml_direction": "NEUTRAL",
+      "ml_confidence": 70.13486945154258,
+      "actual_4h_move": -0.07100031156297587,
+      "prediction_correct": true
+    },
+    {
+      "time": "2025-10-20 14:00:00+00:00",
+      "price": 150.58799743652344,
+      "signal": "SELL",
+      "strength": 13.33,
+      "ml_direction": "NEUTRAL",
+      "ml_confidence": 70.92521257324402,
+      "actual_4h_move": 0.06441424530610446,
+      "prediction_correct": false
+    },
+    {
+      "time": "2025-10-20 17:00:00+00:00",
+      "price": 150.7760009765625,
+      "signal": "SELL",
+      "strength": 13.33,
+      "ml_direction": "NEUTRAL",
+      "ml_confidence": 70.92521257324402,
+      "actual_4h_move": -0.08224662937586072,
+      "prediction_correct": true
+    },
+    {
+      "time": "2025-10-20 20:00:00+00:00",
+      "price": 150.7310028076172,
+      "signal": "HOLD",
+      "strength": 13.33,
+      "ml_direction": "NEUTRAL",
+      "ml_confidence": 70.39374462202885,
+      "actual_4h_move": 0.007956829039631994,
+      "prediction_correct": true
+    }
+  ],
+  "accuracy": {
+    "signal_accuracy": 66.66666666666666,
+    "ml_accuracy": 0.0,
+    "total_tests": 6
+  }
+}

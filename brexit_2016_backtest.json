@@ -1,0 +1,50 @@
+{
+  "metrics": {
+    "initial_capital": 10000,
+    "final_capital": 10017.290328655048,
+    "total_return": 0.17290328655048143,
+    "total_trades": 1,
+    "winning_trades": 1,
+    "losing_trades": 0,
+    "win_rate": 100.0,
+    "total_profit": 17.290328655048622,
+    "total_loss": 0.0,
+    "avg_win": 17.290328655048622,
+    "avg_loss": 0.0,
+    "profit_factor": null,
+    "sharpe_ratio": 0.0,
+    "max_drawdown": 0.0,
+    "by_exit_reason": {
+      "END_OF_PERIOD": {
+        "count": 1,
+        "avg_pnl": 17.290328655048622
+      }
+    }
+  },
+  "trades": [
+    {
+      "symbol": "GBPUSD=X",
+      "market_type": "forex",
+      "entry_date": "2016-07-19",
+      "entry_price": 1.3268934488296509,
+      "stop_loss": 1.3667002522945404,
+      "take_profit": 1.2472798418998718,
+      "direction": "SHORT",
+      "signal": "STRONG SELL",
+      "signal_strength": 40.0,
+      "ml_prediction": "BULLISH",
+      "ml_confidence": 62.762356386129895,
+      "position_size": 1000.0,
+      "risk_amount": 100.0,
+      "capital_at_entry": 10000,
+      "score": 2,
+      "exit_date": "2016-09-29",
+      "exit_price": 1.3039510250091553,
+      "exit_reason": "END_OF_PERIOD",
+      "pnl": 17.290328655048622,
+      "pnl_percent": 0.17260484709710988,
+      "final_capital": 10017.290328655048
+    }
+  ],
+  "timestamp": "2025-10-20 21:45:36"
+}

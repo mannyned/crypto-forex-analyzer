@@ -1,0 +1,50 @@
+{
+  "metrics": {
+    "initial_capital": 10000,
+    "final_capital": 10017.730933582554,
+    "total_return": 0.17730933582553915,
+    "total_trades": 1,
+    "winning_trades": 1,
+    "losing_trades": 0,
+    "win_rate": 100.0,
+    "total_profit": 17.730933582553682,
+    "total_loss": 0.0,
+    "avg_win": 17.730933582553682,
+    "avg_loss": 0.0,
+    "profit_factor": null,
+    "sharpe_ratio": 0.0,
+    "max_drawdown": 0.0,
+    "by_exit_reason": {
+      "END_OF_PERIOD": {
+        "count": 1,
+        "avg_pnl": 17.730933582553682
+      }
+    }
+  },
+  "trades": [
+    {
+      "symbol": "EURCHF=X",
+      "market_type": "forex",
+      "entry_date": "2015-02-18",
+      "entry_price": 1.0676300525665283,
+      "stop_loss": 1.0996589541435242,
+      "take_profit": 1.0035722494125365,
+      "direction": "SHORT",
+      "signal": "SELL",
+      "signal_strength": 26.67,
+      "ml_prediction": "BULLISH",
+      "ml_confidence": 71.00277503152802,
+      "position_size": 1000.0,
+      "risk_amount": 100.0,
+      "capital_at_entry": 10000,
+      "score": 2,
+      "exit_date": "2015-04-29",
+      "exit_price": 1.048699975013733,
+      "exit_reason": "END_OF_PERIOD",
+      "pnl": 17.730933582553682,
+      "pnl_percent": 0.17699550626893032,
+      "final_capital": 10017.730933582554
+    }
+  ],
+  "timestamp": "2025-10-20 21:45:06"
+}
