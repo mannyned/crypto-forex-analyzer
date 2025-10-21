@@ -195,21 +195,63 @@ The integrated lot size calculator helps you manage risk professionally:
 
 ```
 Crypto and Forex Analyzer/
-├── app.py                      # Flask web application with multi-page routing
-├── market_analyzer.py          # Market analysis engine (40+ indicators + ML integration)
-├── data_fetcher.py            # Yahoo Finance data retrieval
-├── candle_analysis.py         # Candlestick pattern recognition (8 patterns)
-├── lot_calculator.py          # Forex lot size calculator
-├── forex_prediction.py        # ML price prediction (4-model ensemble)
+├── app.py                           # Flask web application with multi-page routing
+├── market_analyzer.py               # Market analysis engine (40+ indicators + ML integration)
+├── data_fetcher.py                  # Yahoo Finance data retrieval
+├── candle_analysis.py              # Candlestick pattern recognition (8 patterns)
+├── lot_calculator.py               # Forex lot size calculator
+├── forex_prediction.py             # ML price prediction (4-model ensemble)
+│
+├── Testing Framework/
+│   ├── historical_tester.py        # Signal/ML accuracy testing on historical data
+│   ├── backtester.py               # Trading simulation with entry/exit points
+│   ├── report_generator.py         # HTML report generation
+│   │
+│   ├── Test Scripts/
+│   │   ├── test_major_events.py          # Major forex events (daily intervals)
+│   │   ├── test_major_events_weekly.py   # Weekly interval testing
+│   │   ├── test_flash_crashes.py         # Flash crash event testing
+│   │   ├── test_usdjpy_today.py          # Real-time USD/JPY analysis
+│   │   ├── test_usdjpy_intraday.py       # Intraday hourly testing
+│   │   ├── test_historical.py            # Simple demo test
+│   │   ├── run_test.py                   # Quick test runner
+│   │   ├── run_major_events.py           # Automated major events runner
+│   │   ├── run_weekly_tests.py           # Weekly test runner
+│   │   ├── run_brexit_test.py            # Brexit-specific test
+│   │   └── diagnose_brexit.py            # Diagnostic tool
+│   │
+│   └── Test Results/
+│       ├── swiss_franc_2015_test.json
+│       ├── swiss_franc_2015_report.json
+│       ├── swiss_franc_2015_backtest.json
+│       ├── brexit_2016_test.json
+│       ├── brexit_2016_report.json
+│       ├── brexit_2016_backtest.json
+│       ├── covid_2020_test.json
+│       ├── covid_2020_report.json
+│       ├── covid_2020_backtest.json
+│       ├── major_events_comparison.json
+│       ├── *_weekly_backtest.json (weekly test results)
+│       ├── usdjpy_analysis_today.json
+│       └── usdjpy_intraday_test.json
+│
+├── Documentation/
+│   ├── README.md                        # This file (main documentation)
+│   ├── TESTING_GUIDE.md                 # Complete testing instructions
+│   ├── TESTING_RESULTS_SUMMARY.md       # Comprehensive test results analysis
+│   ├── WEEKLY_TESTING_SUMMARY.md        # Weekly interval analysis and limitations
+│   └── FLASH_CRASH_TEST_RESULTS_UPDATED.md  # Detailed flash crash results
+│
 ├── templates/
-│   ├── home.html              # Landing page with market selection
-│   ├── crypto.html            # Cryptocurrency analysis dashboard
-│   ├── forex.html             # Forex analysis dashboard with ML predictions
-│   ├── lot_calculator.html    # Standalone lot calculator page
-│   └── index.html             # Legacy combined dashboard
-├── requirements.txt           # Python dependencies (includes ML libraries)
-├── .env                       # Environment configuration
-└── README.md                  # This file
+│   ├── home.html                   # Landing page with market selection
+│   ├── crypto.html                 # Cryptocurrency analysis dashboard
+│   ├── forex.html                  # Forex analysis dashboard with ML predictions
+│   ├── lot_calculator.html         # Standalone lot calculator page
+│   └── index.html                  # Legacy combined dashboard
+│
+├── requirements.txt                # Python dependencies (includes ML libraries)
+├── .env                           # Environment configuration
+└── .gitignore                     # Git ignore patterns
 ```
 
 ## Usage
